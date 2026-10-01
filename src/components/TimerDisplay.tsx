@@ -191,64 +191,69 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         </svg>
 
         {/* ======================================================== */}
-        {/* CENTRAL CONTENT (TIME, HOURGLASS, BADGE, ACTIVE TASK)   */}
+        {/* CENTRAL CONTENT: The Hourglass of Chronos & Countdown     */}
+        {/* Perfectly centered with zero visual crowding             */}
         {/* ======================================================== */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 sm:p-4 z-20">
-          {/* Status Badge with Chronos filigree */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 pointer-events-none select-none">
+          {/* Status Label Pill (Top of Center Altar) */}
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-wider uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-0.5`}
+            className={`inline-flex items-center px-3 py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-widest uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1`}
           >
             {getStatusText()}
           </span>
 
-          {/* Unified Chronos View: Compact Hourglass and Bold Countdown */}
-          <div className="flex flex-col items-center justify-center">
-            <ChronosHourglass
-              remainingRatio={remainingRatio}
-              status={status}
-              mode={mode}
-              size={64}
-              className="opacity-95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] -mb-1"
-            />
-            <span
-              className="text-3xl sm:text-4xl md:text-5xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)] tabular-nums my-0.5"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {formatTime(remainingSeconds)}
-            </span>
-          </div>
+          {/* Unified Chronos Hourglass */}
+          <ChronosHourglass
+            remainingRatio={remainingRatio}
+            status={status}
+            mode={mode}
+            size={74}
+            className="opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] my-0.5"
+          />
 
-          {/* Active Task Indicator inside circle */}
-          <div className="mt-1 sm:mt-1.5 max-w-[170px] xs:max-w-[200px] sm:max-w-[230px] truncate">
-            {activeTask ? (
-              <button
-                type="button"
-                onClick={onOpenTasks}
-                title={`Aktif Görev: ${activeTask.title} (Görevleri açmak için tıkla)`}
-                className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-amber-200 bg-black/60 backdrop-blur-md px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-amber-500/30 shadow-xs hover:border-amber-400 transition-all cursor-pointer truncate max-w-full font-chronos"
-              >
-                {activeTask.isCompleted ? (
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-                ) : (
-                  <Target className="w-3 h-3 text-amber-400 shrink-0" />
-                )}
-                <span className="truncate">{activeTask.title}</span>
-                <span className="text-[9px] opacity-80 shrink-0 font-mono text-amber-300">
-                  ({activeTask.completedPomodoros}/{activeTask.estimatedPomodoros} ⏳)
-                </span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={onOpenTasks}
-                className="text-[11px] font-chronos text-amber-300/60 hover:text-amber-200 transition-colors underline underline-offset-4 decoration-amber-500/40 cursor-pointer"
-              >
-                + Odak görevi belirle
-              </button>
-            )}
-          </div>
+          {/* Bold, Legible Digital Countdown */}
+          <span
+            className="text-3xl sm:text-4xl md:text-5xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)] tabular-nums leading-tight mt-0.5"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {formatTime(remainingSeconds)}
+          </span>
         </div>
+      </div>
+
+      {/* ======================================================== */}
+      {/* ACTIVE TASK DOCKED CARD: Cleanly Positioned Below Dial   */}
+      {/* ======================================================== */}
+      <div className="mt-2.5 sm:mt-3.5 w-full max-w-[280px] sm:max-w-xs flex items-center justify-center">
+        {activeTask ? (
+          <button
+            type="button"
+            onClick={onOpenTasks}
+            title={`Aktif Görev: ${activeTask.title} (Görevleri düzenlemek için tıkla)`}
+            className="w-full flex items-center justify-between gap-2 text-xs text-amber-200 bg-black/60 hover:bg-black/80 backdrop-blur-xl px-3.5 py-1.5 sm:py-2 rounded-2xl border border-amber-500/30 hover:border-amber-400/60 shadow-md transition-all cursor-pointer font-chronos group"
+          >
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              {activeTask.isCompleted ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              ) : (
+                <Target className="w-4 h-4 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
+              )}
+              <span className="truncate font-medium text-amber-100">{activeTask.title}</span>
+            </div>
+            <span className="text-[10px] sm:text-[11px] font-mono text-amber-300 shrink-0 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/20">
+              {activeTask.completedPomodoros}/{activeTask.estimatedPomodoros} ⏳
+            </span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onOpenTasks}
+            className="flex items-center gap-1.5 text-[11px] sm:text-xs font-chronos text-amber-300/70 hover:text-amber-200 px-3.5 py-1 rounded-full bg-black/40 hover:bg-black/60 border border-amber-500/20 hover:border-amber-400/40 transition-all cursor-pointer"
+          >
+            <span>+ Odaklanılacak görevi belirle</span>
+          </button>
+        )}
       </div>
     </div>
   );

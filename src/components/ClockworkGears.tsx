@@ -103,14 +103,14 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
         </defs>
 
         {/* ======================================================== */}
-        {/* MAIN ASTROLABE GEAR: The Great Wheel of Chronos (Center) */}
-        {/* Constantly spins smoothly to honor the Titan of Time     */}
+        {/* 1. OUTER ROTATING GEAR COGWHEEL: The Great Wheel Teeth   */}
+        {/* Constantly spins clockwise to honor the Titan of Time    */}
         {/* ======================================================== */}
         <g
           className="origin-[250px_250px] animate-spin-cw"
           style={{ transformOrigin: '250px 250px' }}
         >
-          {/* Great Outer Spiky Gear Teeth (Hades II Clockwork Cathedral Style) */}
+          {/* Great Outer Spiky Gear Teeth (Hades II Cathedral Clockwork) */}
           <path
             d={generateGearPath(250, 250, 246, 226, 36)}
             fill="url(#chronosBronze)"
@@ -119,7 +119,69 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
             strokeOpacity="0.7"
             filter="url(#gearShadow)"
           />
+          {/* Subtle outer accent line */}
+          <circle
+            cx="250"
+            cy="250"
+            r="228"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="1"
+            strokeOpacity="0.3"
+          />
+        </g>
 
+        {/* ======================================================== */}
+        {/* 2. INNER COUNTER-ROTATING GEAR: Mechanical Depth Layer   */}
+        {/* Meshes behind the dial, turning counter-clockwise       */}
+        {/* ======================================================== */}
+        <g
+          className="origin-[250px_250px] animate-spin-ccw"
+          style={{ transformOrigin: '250px 250px' }}
+        >
+          {/* Inner mechanical spoke cog */}
+          <path
+            d={generateGearPath(250, 250, 168, 150, 24)}
+            fill="url(#chronosBronze)"
+            fillOpacity="0.6"
+            stroke="#fbbf24"
+            strokeWidth="1.2"
+            strokeOpacity="0.5"
+          />
+          {/* Mechanical spokes */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const a = i * 45 * (Math.PI / 180);
+            return (
+              <line
+                key={i}
+                x1={250 + 150 * Math.cos(a)}
+                y1={250 + 150 * Math.sin(a)}
+                x2={250 + 138 * Math.cos(a)}
+                y2={250 + 138 * Math.sin(a)}
+                stroke="#fbbf24"
+                strokeWidth="1.5"
+                strokeOpacity="0.6"
+              />
+            );
+          })}
+          {/* Inscribed celestial ring */}
+          <circle
+            cx="250"
+            cy="250"
+            r="150"
+            fill="none"
+            stroke="#d97706"
+            strokeWidth="1"
+            strokeDasharray="4 6"
+            strokeOpacity="0.6"
+          />
+        </g>
+
+        {/* ======================================================== */}
+        {/* 3. STATIC ROMAN NUMERAL DIAL: Dignified & Readable Face  */}
+        {/* Roman numerals stay upright and stationary at 12 hours   */}
+        {/* ======================================================== */}
+        <g>
           {/* Outer Astrolabe Gold Ring */}
           <circle
             cx="250"
@@ -130,19 +192,30 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
             strokeWidth="3.5"
           />
 
-          {/* Greek Key / Celestial Meander Dashed Accent Ring */}
+          {/* Greek Key / Celestial Meander Accent Ring */}
           <circle
             cx="250"
             cy="250"
             r="215"
             fill="none"
             stroke="#fbbf24"
-            strokeWidth="2"
+            strokeWidth="1.5"
             strokeDasharray="6 4 2 4"
             strokeOpacity="0.6"
           />
 
-          {/* Twelve Roman Numeral Hour Roundels (Boss Arena Dial) */}
+          {/* Inner Inscribed Astrolabe Track Ring */}
+          <circle
+            cx="250"
+            cy="250"
+            r="174"
+            fill="none"
+            stroke="url(#chronosGold)"
+            strokeWidth="2"
+            strokeOpacity="0.75"
+          />
+
+          {/* Twelve Roman Numeral Hour Roundels (Upright & Stately) */}
           {romanNumerals.map((numeral, index) => {
             const angle = (index * 30 - 90) * (Math.PI / 180);
             const rMark = 195;
@@ -151,23 +224,23 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
 
             return (
               <g key={numeral} className="select-none">
-                {/* Cartouche circle */}
+                {/* Cartouche badge plate */}
                 <circle
                   cx={x}
                   cy={y}
-                  r="14"
+                  r="13"
                   fill="#0c1017"
                   stroke="url(#chronosGold)"
-                  strokeWidth="1.5"
+                  strokeWidth="1.2"
                   filter="url(#gearShadow)"
                 />
                 {/* Roman Numeral text */}
                 <text
                   x={x}
-                  y={y + 4}
+                  y={y + 3.5}
                   textAnchor="middle"
                   fill="#fef08a"
-                  fontSize="10"
+                  fontSize="9.5"
                   fontWeight="bold"
                   fontFamily="'Cinzel', serif"
                   className="tracking-tight"
@@ -178,70 +251,36 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
             );
           })}
 
-          {/* Inner Inscribed Astrolabe Track Ring */}
-          <circle
-            cx="250"
-            cy="250"
-            r="174"
-            fill="none"
-            stroke="url(#chronosGold)"
-            strokeWidth="2.5"
-            strokeOpacity="0.8"
-          />
-
-          {/* Radial Rays / Spoke Dividers (Every 30 degrees) */}
+          {/* Radial hour marker lines between 174 and 168 */}
           {Array.from({ length: 12 }).map((_, i) => {
             const a = i * 30 * (Math.PI / 180);
-            const x1 = 250 + 174 * Math.cos(a);
-            const y1 = 250 + 174 * Math.sin(a);
-            const x2 = 250 + 152 * Math.cos(a);
-            const y2 = 250 + 152 * Math.sin(a);
-
             return (
               <line
                 key={i}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
+                x1={250 + 174 * Math.cos(a)}
+                y1={250 + 174 * Math.sin(a)}
+                x2={250 + 168 * Math.cos(a)}
+                y2={250 + 168 * Math.sin(a)}
                 stroke="#fbbf24"
                 strokeWidth="1.5"
                 strokeOpacity="0.7"
               />
             );
           })}
-
-          {/* Star & Diamond Inscriptions along internal circle */}
-          <circle
-            cx="250"
-            cy="250"
-            r="152"
-            fill="none"
-            stroke="#d97706"
-            strokeWidth="1.5"
-            strokeDasharray="4 6"
-            strokeOpacity="0.5"
-          />
         </g>
 
-        {/* Center Static Astrolabe Bezel & Sunburst Ring */}
+        {/* ======================================================== */}
+        {/* 4. CENTRAL OBSIDIAN ALTAR: Stage for Hourglass & Time    */}
+        {/* ======================================================== */}
         <circle
           cx="250"
           cy="250"
-          r="142"
-          fill="none"
+          r="140"
+          fill="#06090e"
+          fillOpacity="0.85"
           stroke="url(#chronosGold)"
           strokeWidth="1.5"
-          strokeOpacity="0.4"
-        />
-
-        {/* Subtle Tartarus / Chronos Core Shadow */}
-        <circle
-          cx="250"
-          cy="250"
-          r="138"
-          fill="#06090e"
-          fillOpacity="0.25"
+          strokeOpacity="0.5"
         />
 
         {/* Elapsed Time Scythe / Pointer Arrow Hand (Fixed to progressAngle) */}

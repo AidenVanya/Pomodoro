@@ -223,41 +223,40 @@ export const ChronosHourglass: React.FC<ChronosHourglassProps> = ({
         {/* ORNATE GOLDEN TITAN ARCHITECTURE / PILLARS & PEDESTALS   */}
         {/* ======================================================== */}
 
-        {/* Left Ornate Side Pillar */}
+        {/* Left Ornate Side Pillar with Emerald Rhombus Gem */}
         <rect x="22" y="32" width="8" height="156" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
-        <circle cx="26" cy="110" r="6" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
-        <circle cx="26" cy="110" r="2" fill="#18181b" />
+        <polygon points="26,102 32,110 26,118 20,110" fill="#059669" stroke="#fbbf24" strokeWidth="1" />
+        <polygon points="26,105 29,110 26,115 23,110" fill="#6ee7b7" />
 
-        {/* Right Ornate Side Pillar */}
+        {/* Right Ornate Side Pillar with Emerald Rhombus Gem */}
         <rect x="130" y="32" width="8" height="156" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
-        <circle cx="134" cy="110" r="6" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
-        <circle cx="134" cy="110" r="2" fill="#18181b" />
+        <polygon points="134,102 140,110 134,118 128,110" fill="#059669" stroke="#fbbf24" strokeWidth="1" />
+        <polygon points="134,105 137,110 134,115 131,110" fill="#6ee7b7" />
 
-        {/* Top Pedestal Base (Carved Greek Base) */}
+        {/* Top Pedestal Base with Scythe Arch & Emerald Jewel (Image 3) */}
         <g>
           {/* Top Plinth */}
           <rect x="14" y="20" width="132" height="10" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1.5" />
           <rect x="22" y="30" width="116" height="8" rx="2" fill="#090d14" stroke="url(#frameGold)" strokeWidth="1.5" />
-          {/* Greek Key / Inset studs */}
-          <circle cx="34" cy="34" r="2" fill="#fef08a" />
-          <circle cx="54" cy="34" r="2" fill="#fef08a" />
-          <circle cx="80" cy="34" r="2" fill="#fef08a" />
-          <circle cx="106" cy="34" r="2" fill="#fef08a" />
-          <circle cx="126" cy="34" r="2" fill="#fef08a" />
-          {/* Central Top Crown Jewel / Time Sigil */}
-          <path d="M 80 12 L 86 20 L 74 20 Z" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
+          {/* Curved Chronos Scythe Blade over the top (Image 3) */}
+          <path
+            d="M 28 20 C 50 6, 110 6, 134 16 C 105 11, 55 12, 28 20 Z"
+            fill="url(#frameGold)"
+            stroke="#78350f"
+            strokeWidth="1.2"
+          />
+          {/* Center Top Emerald Jewel */}
+          <polygon points="80,12 87,21 80,30 73,21" fill="#059669" stroke="#fbbf24" strokeWidth="1.2" />
+          <polygon points="80,15 84,21 80,27 76,21" fill="#6ee7b7" />
         </g>
 
-        {/* Bottom Pedestal Base */}
+        {/* Bottom Pedestal Base with Emerald Jewel */}
         <g>
           <rect x="22" y="182" width="116" height="8" rx="2" fill="#090d14" stroke="url(#frameGold)" strokeWidth="1.5" />
           <rect x="14" y="190" width="132" height="10" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1.5" />
-          {/* Bottom studs */}
-          <circle cx="34" cy="186" r="2" fill="#fef08a" />
-          <circle cx="54" cy="186" r="2" fill="#fef08a" />
-          <circle cx="80" cy="186" r="2" fill="#fef08a" />
-          <circle cx="106" cy="186" r="2" fill="#fef08a" />
-          <circle cx="126" cy="186" r="2" fill="#fef08a" />
+          {/* Center Bottom Emerald Jewel */}
+          <polygon points="80,182 87,191 80,200 73,191" fill="#059669" stroke="#fbbf24" strokeWidth="1.2" />
+          <polygon points="80,185 84,191 80,197 76,191" fill="#6ee7b7" />
           {/* Central Bottom Foot Sigil */}
           <path d="M 80 208 L 86 200 L 74 200 Z" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
         </g>
