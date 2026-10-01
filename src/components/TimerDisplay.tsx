@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { Task, TimerMode, TimerStatus, TimerVisualMode } from '../types/pomodoro';
 import { formatTime } from '../utils/formatters';
-import { Target, CheckCircle2, Cog, Hourglass, Sparkles } from 'lucide-react';
+import { Target, CheckCircle2 } from 'lucide-react';
 import { ClockworkGears } from './ClockworkGears';
 import { ChronosHourglass } from './ChronosHourglass';
 
@@ -22,9 +22,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   status,
   activeTask,
   onOpenTasks,
-  initialVisualMode = 'combined',
 }) => {
-  const [visualMode, setVisualMode] = useState<TimerVisualMode>(initialVisualMode);
 
   // SVG Geometry constants
   const size = 320;
@@ -56,9 +54,9 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
       glow: 'shadow-amber-500/20 dark:shadow-amber-500/25',
       badgeBorder: 'border-amber-500/40 dark:border-amber-400/30',
       badgeBg: 'bg-amber-500/15 text-amber-600 dark:text-amber-300',
-      label: 'Zamanın Hükmü',
-      activeLabel: 'Kronos Akışı (Derin Odak)',
-      pausedLabel: 'Zaman Donduruldu',
+      label: 'Çalışma',
+      activeLabel: 'Çalışma Zamanı',
+      pausedLabel: 'Zaman Duraklatıldı',
     },
     SHORT_BREAK: {
       gradientId: 'gradient-chronos-emerald',
@@ -67,9 +65,9 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
       glow: 'shadow-emerald-500/20 dark:shadow-emerald-500/25',
       badgeBorder: 'border-emerald-500/40 dark:border-emerald-400/30',
       badgeBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300',
-      label: 'Ateşkes',
-      activeLabel: 'Kısa Nefes Seansı',
-      pausedLabel: 'Zaman Donduruldu',
+      label: 'Kısa Mola',
+      activeLabel: 'Mola Zamanı',
+      pausedLabel: 'Zaman Duraklatıldı',
     },
     LONG_BREAK: {
       gradientId: 'gradient-chronos-sky',
@@ -78,9 +76,9 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
       glow: 'shadow-sky-500/20 dark:shadow-sky-500/25',
       badgeBorder: 'border-sky-500/40 dark:border-sky-400/30',
       badgeBg: 'bg-sky-500/15 text-sky-600 dark:text-sky-300',
-      label: 'Titan Uykusu',
-      activeLabel: 'Büyük Yenilenme',
-      pausedLabel: 'Zaman Donduruldu',
+      label: 'Uzun Mola',
+      activeLabel: 'Uzun Mola Zamanı',
+      pausedLabel: 'Zaman Duraklatıldı',
     },
   }[mode];
 
@@ -92,51 +90,6 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
 
   return (
     <div className="relative flex flex-col items-center justify-center my-1 sm:my-3 select-none shrink-0 w-full max-w-sm sm:max-w-md mx-auto">
-      {/* Visual Mode Selector: Çarklar / Kum Saati / Bütünleşik */}
-      <div className="flex items-center gap-0.5 sm:gap-1 mb-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-black/40 border border-amber-500/20 backdrop-blur-md z-20 shadow-xs">
-        <button
-          type="button"
-          onClick={() => setVisualMode('combined')}
-          className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-chronos transition-all cursor-pointer ${
-            visualMode === 'combined'
-              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
-              : 'text-amber-200/70 hover:text-amber-100'
-          }`}
-          title="Bütünleşik Görünüm: Dönen Çarklar ve Kum Saati"
-        >
-          <Sparkles className="w-3 h-3" />
-          <span>Bütünleşik</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setVisualMode('gears')}
-          className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-chronos transition-all cursor-pointer ${
-            visualMode === 'gears'
-              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
-              : 'text-amber-200/70 hover:text-amber-100'
-          }`}
-          title="Kadran Görünümü: Dönen Çarklar ve Roma Rakamları"
-        >
-          <Cog className="w-3 h-3" />
-          <span>Çarklar</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setVisualMode('hourglass')}
-          className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-chronos transition-all cursor-pointer ${
-            visualMode === 'hourglass'
-              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
-              : 'text-amber-200/70 hover:text-amber-100'
-          }`}
-          title="Kum Saati Görünümü: Zamanın Kumları"
-        >
-          <Hourglass className="w-3 h-3" />
-          <span>Kum Saati</span>
-        </button>
-      </div>
-
       {/* Dynamic Ambient Breathing Aura Behind Timer */}
       <div
         className={`absolute -inset-4 sm:-inset-8 rounded-full blur-2xl sm:blur-3xl transition-all duration-700 pointer-events-none ${
@@ -147,21 +100,19 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         aria-hidden="true"
       />
 
-      {/* Outer subtle glow wrapper with dynamic constraints */}
+      {/* Outer subtle glow wrapper with dynamic constraints & clean overflow containment */}
       <div
-        className={`relative flex items-center justify-center rounded-full p-2 sm:p-4 transition-all duration-500 shadow-2xl w-[min(82vw,36dvh)] h-[min(82vw,36dvh)] sm:w-[350px] sm:h-[350px] md:w-[380px] md:h-[380px] max-w-[400px] max-h-[400px] min-w-[240px] min-h-[240px] aspect-square bg-[#070b10]/80 backdrop-blur-2xl border-2 border-amber-500/30 ${modeStyles.glow}`}
+        className={`relative flex items-center justify-center rounded-full overflow-hidden p-2 sm:p-4 transition-all duration-500 shadow-2xl w-[min(82vw,36dvh)] h-[min(82vw,36dvh)] sm:w-[350px] sm:h-[350px] md:w-[380px] md:h-[380px] max-w-[400px] max-h-[400px] min-w-[240px] min-h-[240px] aspect-square bg-[#070b10]/80 backdrop-blur-2xl border-2 border-amber-500/30 ${modeStyles.glow}`}
       >
         {/* ======================================================== */}
-        {/* ROTATING CLOCKWORK GEARS (Rendered in Gears & Combined)  */}
+        {/* ROTATING CLOCKWORK GEARS: The Grand Wheel of Chronos     */}
         {/* ======================================================== */}
-        {(visualMode === 'gears' || visualMode === 'combined') && (
-          <ClockworkGears
-            status={status}
-            mode={mode}
-            remainingRatio={remainingRatio}
-            className="absolute inset-0 w-full h-full scale-[1.05]"
-          />
-        )}
+        <ClockworkGears
+          status={status}
+          mode={mode}
+          remainingRatio={remainingRatio}
+          className="absolute inset-0 w-full h-full"
+        />
 
         {/* ======================================================== */}
         {/* CIRCULAR TIMER PROGRESS RING SVG                         */}
@@ -245,62 +196,28 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 sm:p-4 z-20">
           {/* Status Badge with Chronos filigree */}
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-wider uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1`}
+            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-wider uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-0.5`}
           >
             {getStatusText()}
           </span>
 
-          {/* If Hourglass view is selected, render large Hourglass with digital time below */}
-          {visualMode === 'hourglass' ? (
-            <div className="flex flex-col items-center justify-center">
-              <ChronosHourglass
-                remainingRatio={remainingRatio}
-                status={status}
-                mode={mode}
-                size={110}
-                className="my-1 sm:my-1.5"
-              />
-              <span
-                className="text-2xl sm:text-3xl font-chronos font-bold tracking-tight text-amber-100 tabular-nums drop-shadow-[0_2px_8px_rgba(245,158,11,0.5)]"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {formatTime(remainingSeconds)}
-              </span>
-            </div>
-          ) : visualMode === 'combined' ? (
-            /* Combined Mode: Compact Hourglass and Bold Countdown in harmonious layout */
-            <div className="flex flex-col items-center justify-center">
-              <ChronosHourglass
-                remainingRatio={remainingRatio}
-                status={status}
-                mode={mode}
-                size={68}
-                className="opacity-95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] -mb-1"
-              />
-              <span
-                className="text-3xl sm:text-4xl md:text-5xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)] tabular-nums my-0.5"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {formatTime(remainingSeconds)}
-              </span>
-            </div>
-          ) : (
-            /* Gears / Astrolabe Mode: Massive Roman-styled Countdown Display */
-            <div className="flex flex-col items-center justify-center my-2 sm:my-3">
-              <span
-                className="text-4xl sm:text-5xl md:text-6xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)] tabular-nums"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {formatTime(remainingSeconds)}
-              </span>
-              <span className="text-[10px] font-chronos tracking-widest text-amber-400/60 uppercase mt-0.5">
-                • CHRONOS •
-              </span>
-            </div>
-          )}
+          {/* Unified Chronos View: Compact Hourglass and Bold Countdown */}
+          <div className="flex flex-col items-center justify-center">
+            <ChronosHourglass
+              remainingRatio={remainingRatio}
+              status={status}
+              mode={mode}
+              size={64}
+              className="opacity-95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] -mb-1"
+            />
+            <span
+              className="text-3xl sm:text-4xl md:text-5xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)] tabular-nums my-0.5"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {formatTime(remainingSeconds)}
+            </span>
+          </div>
 
           {/* Active Task Indicator inside circle */}
           <div className="mt-1 sm:mt-1.5 max-w-[170px] xs:max-w-[200px] sm:max-w-[230px] truncate">

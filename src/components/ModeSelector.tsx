@@ -18,19 +18,19 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
   const modes: { id: TimerMode; label: string; subLabel: string; icon: React.ReactNode }[] = [
     {
       id: 'FOCUS',
-      label: 'Zaman Bükümü',
-      subLabel: 'Odak',
+      label: 'Çalışma',
+      subLabel: 'Çalışma',
       icon: <Sparkles className="w-3.5 h-3.5" />,
     },
     {
       id: 'SHORT_BREAK',
-      label: 'Ateşkes',
-      subLabel: 'Kısa Mola',
+      label: 'Kısa Mola',
+      subLabel: 'Mola',
       icon: <Shield className="w-3.5 h-3.5" />,
     },
     {
       id: 'LONG_BREAK',
-      label: 'Titan Uykusu',
+      label: 'Uzun Mola',
       subLabel: 'Uzun Mola',
       icon: <Moon className="w-3.5 h-3.5" />,
     },
@@ -115,7 +115,7 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
         })}
       </div>
 
-      {/* Rounds indicator */}
+      {/* Rounds indicator with solid bars (no hollow/empty hoops) */}
       <div className="flex items-center gap-2 sm:gap-2.5 text-xs font-chronos font-medium text-amber-300/80">
         <span className="text-[11px] sm:text-xs tracking-wider">DÖNGÜ {round} / {maxRounds}</span>
         <div className="flex items-center gap-1.5 ml-0.5" aria-label={`Döngü ${round} / ${maxRounds}`}>
@@ -123,18 +123,15 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
             const isCompleted = index + 1 < round;
             const isCurrent = index + 1 === round;
 
-            let dotColor = 'bg-amber-950/60 border border-amber-500/30';
-            if (isCompleted || isCurrent) {
-              if (currentMode === 'FOCUS') dotColor = 'bg-gradient-to-r from-amber-400 to-yellow-500 shadow-xs shadow-amber-500/80 border-amber-300';
-              else if (currentMode === 'SHORT_BREAK') dotColor = 'bg-gradient-to-r from-emerald-400 to-teal-400 shadow-xs shadow-emerald-500/80 border-emerald-300';
-              else dotColor = 'bg-gradient-to-r from-sky-400 to-indigo-400 shadow-xs shadow-sky-500/80 border-sky-300';
-            }
-
             return (
               <span
                 key={index}
-                className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 ${dotColor} ${
-                  isCurrent ? 'ring-2 ring-offset-1 ring-amber-400 ring-offset-black scale-125' : ''
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  isCurrent
+                    ? 'w-4 bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]'
+                    : isCompleted
+                    ? 'w-2.5 bg-amber-500/70'
+                    : 'w-2 bg-amber-500/20'
                 }`}
               />
             );
