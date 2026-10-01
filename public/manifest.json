@@ -1,0 +1,26 @@
+{
+  "name": "CHRONOS - Titan of Time",
+  "short_name": "Chronos",
+  "description": "Zamanın değerini hatırlatan antik çarklar ve kum saati ile Pomodoro odaklanma zamanlayıcısı.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06090d",
+  "theme_color": "#06090d",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/chronos-logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/chronos-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

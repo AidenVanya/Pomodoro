@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, BarChart2, Sun, Moon, Hourglass } from 'lucide-react';
+import { Settings, BarChart2, Sun, Moon, Hourglass, Download } from 'lucide-react';
 
 interface HeaderProps {
   isDark: boolean;
@@ -8,6 +8,8 @@ interface HeaderProps {
   onOpenStats: () => void;
   onOpenTasks: () => void;
   uncompletedTasksCount: number;
+  onInstallApp?: () => void;
+  isInstallable?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,6 +19,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenStats,
   onOpenTasks,
   uncompletedTasksCount,
+  onInstallApp,
+  isInstallable,
 }) => {
   return (
     <header className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto flex items-center justify-between pt-[max(0.6rem,env(safe-area-inset-top))] pb-1 sm:pb-3 px-3 sm:px-6 md:px-8 shrink-0 select-none relative z-20">
@@ -49,6 +53,20 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right Action Buttons */}
       <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* PWA Install Button */}
+        {isInstallable && onInstallApp && (
+          <button
+            type="button"
+            onClick={onInstallApp}
+            title="Uygulamayı Cihaza Yükle / İndir"
+            aria-label="Uygulamayı İndir"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-600/30 to-amber-500/20 hover:from-amber-600/50 hover:to-amber-500/40 border border-amber-400/50 text-amber-200 hover:text-white transition-all cursor-pointer text-xs font-chronos font-bold shadow-xs"
+          >
+            <Download className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden xs:inline">İndir</span>
+          </button>
+        )}
+
         {/* Open Stats Modal Button */}
         <button
           type="button"

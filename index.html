@@ -5,7 +5,10 @@
     <link rel="icon" type="image/jpeg" href="/chronos-logo.jpg" />
     <link rel="apple-touch-icon" href="/chronos-logo.jpg" />
     <link rel="preload" as="image" href="/chronos-logo.jpg" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="application-name" content="Chronos" />
+    <meta name="apple-mobile-web-app-title" content="Chronos" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -31,6 +34,15 @@
       }
       setTimeout(removeNetlifyWidgets, 1000);
       setTimeout(removeNetlifyWidgets, 2500);
+
+      // Register PWA Service Worker for browser installation & offline support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.log('PWA ServiceWorker registration skipped:', err);
+          });
+        });
+      }
     </script>
   </body>
 </html>

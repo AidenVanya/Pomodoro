@@ -13,7 +13,9 @@ import { AmbientBar } from './components/AmbientBar';
 import { PullToRefreshIndicator } from './components/PullToRefreshIndicator';
 import { SplashScreen } from './components/SplashScreen';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
+import { usePwaInstall } from './hooks/usePwaInstall';
 import { startAmbientSound, setAmbientVolume, stopAmbientSound } from './utils/audio';
+import { Share, X as CloseIcon, Download } from 'lucide-react';
 
 export function App() {
   const {
@@ -40,6 +42,9 @@ export function App() {
   // Splash screen state
   const [showSplash, setShowSplash] = useState(true);
 
+  // Browser PWA installation
+  const { isInstallable, installApp, showIOSPrompt, setShowIOSPrompt } = usePwaInstall();
+
   // Pop up modal states
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -52,7 +57,7 @@ export function App() {
   };
 
   // Keyboard shortcuts (Space: Toggle, R: Reset, S: Skip) - disabled when any modal is open
-  const isAnyModalOpen = isSettingsOpen || isTaskModalOpen || isStatsModalOpen;
+  const isAnyModalOpen = isSettingsOpen || isTaskModalOpen || isStatsModalOpen || showIOSPrompt;
   useKeyboardShortcuts({
     onToggle: toggle,
     onReset: reset,
@@ -151,6 +156,8 @@ export function App() {
         onOpenStats={() => setIsStatsModalOpen(true)}
         onOpenTasks={() => setIsTaskModalOpen(true)}
         uncompletedTasksCount={uncompletedTasksCount}
+        isInstallable={isInstallable}
+        onInstallApp={installApp}
       />
 
       {/* Pure Zen Center: Responsive for both mobile and desktop screens */}
@@ -252,6 +259,63 @@ export function App() {
           }
         }}
       />
+
+      {/* iOS Installation Instruction Modal */}
+      {showIOSPrompt && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setShowIOSPrompt(false)}
+        >
+          <div
+            className="w-full max-w-sm bg-[#0a0e14] text-amber-100 rounded-3xl border border-amber-500/40 p-6 shadow-2xl relative font-chronos"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowIOSPrompt(false)}
+              aria-label="Kapat"
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-amber-400/60 hover:text-amber-200 hover:bg-amber-500/10 transition-colors cursor-pointer"
+            >
+              <CloseIcon className="w-5 h-5" />
+            </button>
+
+            <div className="flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 mb-4">
+                <Download className="w-7 h-7" />
+              </div>
+
+              <h3 className="text-lg font-bold text-amber-200 mb-2">
+                Uygulamayı iPhone'a Yükleyin
+              </h3>
+
+              <p className="text-xs text-amber-300/80 leading-relaxed mb-5">
+                Chronos'u tarayıcı çubuğu olmadan tam ekran bir uygulama olarak kullanmak için:
+              </p>
+
+              <div className="w-full space-y-3 text-left text-xs bg-black/50 p-4 rounded-2xl border border-amber-500/20 mb-5">
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[11px] shrink-0">1</span>
+                  <span>Safari'nin alt menüsündeki <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-zinc-800 font-mono text-amber-300"><Share className="w-3 h-3 inline mr-1" />Paylaş</span> butonuna dokunun.</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[11px] shrink-0">2</span>
+                  <span>Aşağı kaydırıp <strong className="text-amber-200">"Ana Ekrana Ekle"</strong> seçeneğini seçin.</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowIOSPrompt(false)}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 text-black font-bold text-xs transition-colors cursor-pointer"
+              >
+                Anladım
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
