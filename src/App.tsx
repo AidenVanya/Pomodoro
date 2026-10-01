@@ -11,6 +11,7 @@ import { StatsModal } from './components/StatsModal';
 import { SettingsModal } from './components/SettingsModal';
 import { AmbientBar } from './components/AmbientBar';
 import { PullToRefreshIndicator } from './components/PullToRefreshIndicator';
+import { SplashScreen } from './components/SplashScreen';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { startAmbientSound, setAmbientVolume, stopAmbientSound } from './utils/audio';
 
@@ -35,6 +36,9 @@ export function App() {
   } = usePomodoro();
 
   const { setTheme, isDark, toggleTheme } = useTheme(settings.theme);
+
+  // Splash screen state
+  const [showSplash, setShowSplash] = useState(true);
 
   // Pop up modal states
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -112,6 +116,11 @@ export function App() {
 
   return (
     <div className={`min-h-screen min-h-dvh w-full flex flex-col justify-between transition-colors duration-500 relative select-none touch-pan-y ${themeBaseClass}`}>
+      {/* Cinematic Splash Screen with Official Chronos Logo */}
+      {showSplash && (
+        <SplashScreen onFinish={() => setShowSplash(false)} />
+      )}
+
       {/* Mobile Pull-to-Refresh Indicator */}
       <PullToRefreshIndicator
         pullDistance={pullDistance}

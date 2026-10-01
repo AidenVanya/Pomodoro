@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { PomodoroSettings, SoundTheme } from '../types/pomodoro';
 import { playAlertSound } from '../utils/audio';
 import { isNotificationSupported, requestNotificationPermission } from '../utils/notifications';
-import { X, Volume2, Bell, Sliders, Clock, PlayCircle, Keyboard, Sun, Moon, Laptop, Palette, Sunset, Trees, Hourglass } from 'lucide-react';
+import { X, Volume2, Bell, Sliders, Clock, PlayCircle, Keyboard, Sun, Moon, Laptop, Palette, Sunset, Trees } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -371,8 +371,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     : 'border-amber-500/30 bg-black/40 hover:bg-black/60 text-amber-200/80'
                 }`}
               >
-                <div className="flex items-center gap-2.5">
-                  <Hourglass className="w-5 h-5 text-amber-400 shrink-0" />
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl overflow-hidden border border-amber-500/40 shadow-xs shrink-0 bg-black/60 p-0.5">
+                    <img
+                      src="/chronos-logo.jpg"
+                      alt="Chronos Logo"
+                      className="w-full h-full object-cover object-center rounded-lg"
+                    />
+                  </div>
                   <div className="text-left">
                     <span className="font-bold text-sm block text-amber-200">CHRONOS • Zamanın Titanı</span>
                     <span className="text-[10px] text-amber-400/70">Dönen Çarklar, Antik Kum Saati & Hades II</span>

@@ -37,14 +37,23 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </button>
 
-      {/* Center: Mythical Chronos Title Branding */}
-      <div className="flex flex-col items-center justify-center text-center">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-chronos-deco font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-emerald-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]">
-          CHRONOS
-        </h1>
-        <span className="text-[9px] sm:text-[10px] font-chronos tracking-[0.25em] text-amber-400/80 uppercase">
-          Titan of Time
-        </span>
+      {/* Center: Mythical Chronos Title Branding with Official Logo */}
+      <div className="flex items-center justify-center gap-2 sm:gap-2.5">
+        <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden border border-amber-500/40 shadow-sm shadow-amber-500/20 shrink-0 bg-black/60 p-0.5">
+          <img
+            src="/chronos-logo.jpg"
+            alt="Chronos Logo"
+            className="w-full h-full object-cover object-center rounded-lg"
+          />
+        </div>
+        <div className="flex flex-col items-start justify-center">
+          <h1 className="text-lg sm:text-2xl font-chronos-deco font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-emerald-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] leading-none">
+            CHRONOS
+          </h1>
+          <span className="text-[8px] sm:text-[9px] font-chronos tracking-[0.25em] text-amber-400/80 uppercase mt-0.5">
+            Titan of Time
+          </span>
+        </div>
       </div>
 
       {/* Right Action Buttons */}
