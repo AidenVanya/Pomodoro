@@ -163,9 +163,6 @@ export function App() {
             <span>Seansı Atla</span>
           </span>
         </p>
-        <p className="sm:hidden text-[10px] text-zinc-400 dark:text-zinc-600 font-light tracking-wider">
-          ZEN POMODORO
-        </p>
       </footer>
 
       {/* Popups & Modals */}

@@ -193,7 +193,7 @@ export function playAlertSound(theme: SoundTheme, volumePercent: number = 70): v
 }
 
 // ----------------------------------------------------
-// High Quality Real Ambient Audio Player (Seamless Loop & Crossfade)
+// High Quality Real Ambient Audio Player (Seamless Loop & Robust Switching)
 // ----------------------------------------------------
 const AUDIO_SOURCES: Record<Exclude<AmbientSoundType, 'none'>, string> = {
   rain: '/sounds/rain.mp3',
@@ -202,72 +202,109 @@ const AUDIO_SOURCES: Record<Exclude<AmbientSoundType, 'none'>, string> = {
 };
 
 const audioInstances: Partial<Record<Exclude<AmbientSoundType, 'none'>, HTMLAudioElement>> = {};
+const fadeTimers: Partial<Record<string, number>> = {};
 
 let currentPlayingType: AmbientSoundType = 'none';
-let currentAudio: HTMLAudioElement | null = null;
-let fadeTimer: number | null = null;
 
-function clearFadeTimer(): void {
-  if (fadeTimer !== null) {
-    clearInterval(fadeTimer);
-    fadeTimer = null;
+function clearAudioFade(key: string): void {
+  const timer = fadeTimers[key];
+  if (timer !== undefined) {
+    clearInterval(timer);
+    delete fadeTimers[key];
   }
 }
 
-function fadeVolume(
+function stopAndResetAudio(key: string, audio: HTMLAudioElement): void {
+  clearAudioFade(key);
+  try {
+    audio.pause();
+  } catch {
+    // ignore
+  }
+  audio.currentTime = 0;
+  audio.volume = 0;
+}
+
+/**
+ * Immediately stop and pause all ambient audio instances except an optional target.
+ * Guarantees that no two ambient sounds can ever overlap or play at the same time.
+ */
+function stopAllAmbientAudiosExcept(keepType?: AmbientSoundType): void {
+  (Object.keys(AUDIO_SOURCES) as Exclude<AmbientSoundType, 'none'>[]).forEach((type) => {
+    if (type !== keepType) {
+      clearAudioFade(type);
+      const audio = audioInstances[type];
+      if (audio) {
+        stopAndResetAudio(type, audio);
+      }
+    }
+  });
+}
+
+function fadeAudioVolume(
+  key: string,
   audio: HTMLAudioElement,
   startVol: number,
   targetVol: number,
   durationMs: number,
   onComplete?: () => void
 ): void {
-  clearFadeTimer();
-  const startTime = performance.now();
+  clearAudioFade(key);
+  if (durationMs <= 0) {
+    audio.volume = Math.max(0, Math.min(1, targetVol));
+    if (onComplete) onComplete();
+    return;
+  }
 
-  fadeTimer = window.setInterval(() => {
+  const startTime = performance.now();
+  const timer = window.setInterval(() => {
     const elapsed = performance.now() - startTime;
     const progress = Math.min(1, elapsed / durationMs);
     const newVol = startVol + (targetVol - startVol) * progress;
     audio.volume = Math.max(0, Math.min(1, newVol));
 
     if (progress >= 1) {
-      clearFadeTimer();
+      clearAudioFade(key);
       if (onComplete) onComplete();
     }
   }, 20);
+
+  fadeTimers[key] = timer;
 }
 
 /**
- * Starts or transitions ambient sound with an organic crossfade (fade-in / fade-out).
+ * Starts or transitions ambient sound with zero overlapping bugs.
  */
 export function startAmbientSound(type: AmbientSoundType, volumePercent: number): void {
   const targetVolume = Math.max(0, Math.min(1, volumePercent / 100));
 
-  // If already playing this exact sound, just update volume smoothly
-  if (currentPlayingType === type && currentAudio) {
-    fadeVolume(currentAudio, currentAudio.volume, targetVolume, 150);
-    return;
-  }
-
-  // Smoothly fade out currently playing ambient audio
-  if (currentAudio) {
-    const prevAudio = currentAudio;
-    fadeVolume(prevAudio, prevAudio.volume, 0, 300, () => {
-      prevAudio.pause();
-      prevAudio.currentTime = 0;
-    });
-    currentAudio = null;
-    currentPlayingType = 'none';
-  }
-
   if (type === 'none') {
+    stopAmbientSound();
     return;
   }
+
+  // If already playing this exact sound, just update volume smoothly
+  if (currentPlayingType === type) {
+    const audio = audioInstances[type];
+    if (audio) {
+      if (audio.paused) {
+        audio.play().catch(() => {});
+      }
+      fadeAudioVolume(type, audio, audio.volume, targetVolume, 100);
+      return;
+    }
+  }
+
+  // 1. Immediately update active playing type to prevent async race conditions
+  currentPlayingType = type;
+
+  // 2. STOP and reset all other audio instances immediately - guarantees NO overlapping sounds
+  stopAllAmbientAudiosExcept(type);
 
   const src = AUDIO_SOURCES[type];
   if (!src) return;
 
-  // Retrieve or initialize audio element
+  // 3. Retrieve or initialize the audio instance
   let audio = audioInstances[type];
   if (!audio) {
     audio = new Audio(src);
@@ -276,9 +313,7 @@ export function startAmbientSound(type: AmbientSoundType, volumePercent: number)
     audioInstances[type] = audio;
   }
 
-  currentAudio = audio;
-  currentPlayingType = type;
-
+  // Prepare audio for smooth fade-in
   audio.volume = 0;
   audio.currentTime = 0;
 
@@ -286,29 +321,48 @@ export function startAmbientSound(type: AmbientSoundType, volumePercent: number)
   if (playPromise !== undefined) {
     playPromise
       .then(() => {
-        fadeVolume(audio, 0, targetVolume, 400);
+        // If the user has switched away or stopped sound before playPromise resolved, stop immediately
+        if (currentPlayingType !== type) {
+          stopAndResetAudio(type, audio);
+          return;
+        }
+
+        // Smoothly fade in to target volume over 250ms
+        fadeAudioVolume(type, audio, 0, targetVolume, 250);
       })
       .catch((err) => {
-        console.warn('Ambient audio autoplay restricted or failed:', err);
+        if (err.name !== 'AbortError') {
+          console.warn('Ambient audio play error:', err);
+        }
       });
   }
 }
 
 export function setAmbientVolume(volumePercent: number): void {
   const targetVolume = Math.max(0, Math.min(1, volumePercent / 100));
-  if (currentAudio) {
-    fadeVolume(currentAudio, currentAudio.volume, targetVolume, 100);
+  if (currentPlayingType !== 'none') {
+    const audio = audioInstances[currentPlayingType];
+    if (audio) {
+      fadeAudioVolume(currentPlayingType, audio, audio.volume, targetVolume, 60);
+    }
   }
 }
 
 export function stopAmbientSound(): void {
-  if (currentAudio) {
-    const audio = currentAudio;
-    fadeVolume(audio, audio.volume, 0, 250, () => {
-      audio.pause();
-      audio.currentTime = 0;
-    });
-    currentAudio = null;
-  }
+  const prevType = currentPlayingType;
   currentPlayingType = 'none';
+
+  // Immediately stop all other audios
+  stopAllAmbientAudiosExcept(prevType !== 'none' ? prevType : undefined);
+
+  if (prevType !== 'none') {
+    const audio = audioInstances[prevType];
+    if (audio && !audio.paused && audio.volume > 0.01) {
+      fadeAudioVolume(prevType, audio, audio.volume, 0, 150, () => {
+        stopAndResetAudio(prevType, audio);
+      });
+    } else if (audio) {
+      stopAndResetAudio(prevType, audio);
+    }
+  }
 }
