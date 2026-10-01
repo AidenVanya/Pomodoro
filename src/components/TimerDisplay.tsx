@@ -36,32 +36,37 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   // Stroke offset so the ring shrinks as time elapses
   const strokeDashoffset = circumference * (1 - remainingRatio);
 
+  // Endpoint glowing bead coordinates inside the -rotate-90 coordinate space
+  const progressAngle = (1 - remainingRatio) * 2 * Math.PI;
+  const dotX = center + radius * Math.cos(progressAngle);
+  const dotY = center + radius * Math.sin(progressAngle);
+
   // Mode-based color configurations
   const modeStyles = {
     FOCUS: {
-      stroke: 'stroke-rose-500',
-      track: 'stroke-rose-100 dark:stroke-rose-950/40',
-      glow: 'shadow-rose-500/10 dark:shadow-rose-500/20',
-      textAccent: 'text-rose-500 dark:text-rose-400',
-      bgBadge: 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-300 border-rose-200 dark:border-rose-900',
+      gradientId: 'gradient-focus',
+      auraBg: 'bg-gradient-to-tr from-rose-500/40 via-pink-500/25 to-amber-500/20',
+      track: 'stroke-rose-950/5 dark:stroke-white/5',
+      glow: 'shadow-rose-500/15 dark:shadow-rose-500/20',
+      bgBadge: 'bg-rose-500/10 text-rose-600 dark:text-rose-300 border-rose-300/40 dark:border-rose-500/20',
       label: 'Odaklanma Zamanı',
       activeLabel: 'Derin Odak',
     },
     SHORT_BREAK: {
-      stroke: 'stroke-emerald-500',
-      track: 'stroke-emerald-100 dark:stroke-emerald-950/40',
-      glow: 'shadow-emerald-500/10 dark:shadow-emerald-500/20',
-      textAccent: 'text-emerald-500 dark:text-emerald-400',
-      bgBadge: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900',
+      gradientId: 'gradient-short-break',
+      auraBg: 'bg-gradient-to-tr from-emerald-500/40 via-teal-500/25 to-cyan-500/20',
+      track: 'stroke-emerald-950/5 dark:stroke-white/5',
+      glow: 'shadow-emerald-500/15 dark:shadow-emerald-500/20',
+      bgBadge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-300/40 dark:border-emerald-500/20',
       label: 'Kısa Mola',
       activeLabel: 'Nefes Al ve Dinlen',
     },
     LONG_BREAK: {
-      stroke: 'stroke-sky-500',
-      track: 'stroke-sky-100 dark:stroke-sky-950/40',
-      glow: 'shadow-sky-500/10 dark:shadow-sky-500/20',
-      textAccent: 'text-sky-500 dark:text-sky-400',
-      bgBadge: 'bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-300 border-sky-200 dark:border-sky-900',
+      gradientId: 'gradient-long-break',
+      auraBg: 'bg-gradient-to-tr from-sky-500/40 via-blue-500/25 to-indigo-500/20',
+      track: 'stroke-sky-950/5 dark:stroke-white/5',
+      glow: 'shadow-sky-500/15 dark:shadow-sky-500/20',
+      bgBadge: 'bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-300/40 dark:border-sky-500/20',
       label: 'Uzun Mola',
       activeLabel: 'Yenilenme Zamanı',
     },
@@ -75,15 +80,54 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
 
   return (
     <div className="relative flex flex-col items-center justify-center my-1 sm:my-3 md:my-4 select-none shrink-0">
-      {/* Outer subtle glow wrapper with dynamic viewport constraints on mobile and expansive scaling on desktop */}
+      {/* Dynamic Ambient Breathing Aura Behind Timer */}
       <div
-        className={`relative flex items-center justify-center rounded-full p-2 sm:p-4 md:p-5 transition-all duration-500 shadow-xl sm:shadow-2xl w-[min(72vw,33dvh)] h-[min(72vw,33dvh)] sm:w-[330px] sm:h-[330px] md:w-[360px] md:h-[360px] max-w-[380px] max-h-[380px] min-w-[220px] min-h-[220px] aspect-square ${modeStyles.glow}`}
+        className={`absolute -inset-4 sm:-inset-10 rounded-full blur-2xl sm:blur-3xl transition-all duration-700 pointer-events-none ${
+          status === 'RUNNING'
+            ? 'animate-pulse-glow opacity-70 dark:opacity-60 scale-105'
+            : 'opacity-25 dark:opacity-20 scale-95'
+        } ${modeStyles.auraBg}`}
+        aria-hidden="true"
+      />
+
+      {/* Outer subtle glow wrapper with dynamic viewport constraints */}
+      <div
+        className={`relative flex items-center justify-center rounded-full p-2 sm:p-4 md:p-5 transition-all duration-500 shadow-xl sm:shadow-2xl w-[min(74vw,34dvh)] h-[min(74vw,34dvh)] sm:w-[330px] sm:h-[330px] md:w-[360px] md:h-[360px] max-w-[380px] max-h-[380px] min-w-[220px] min-h-[220px] aspect-square bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl border border-white/60 dark:border-white/10 ${modeStyles.glow}`}
       >
         <svg
           viewBox={`0 0 ${size} ${size}`}
           className="w-full h-full transform -rotate-90"
           aria-hidden="true"
         >
+          {/* Gradient definitions and glow filter */}
+          <defs>
+            <linearGradient id="gradient-focus" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f43f5e" />
+              <stop offset="60%" stopColor="#fb7185" />
+              <stop offset="100%" stopColor="#fb923c" />
+            </linearGradient>
+
+            <linearGradient id="gradient-short-break" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#10b981" />
+              <stop offset="60%" stopColor="#34d399" />
+              <stop offset="100%" stopColor="#06b6d4" />
+            </linearGradient>
+
+            <linearGradient id="gradient-long-break" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#0ea5e9" />
+              <stop offset="60%" stopColor="#38bdf8" />
+              <stop offset="100%" stopColor="#6366f1" />
+            </linearGradient>
+
+            <filter id="timerGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
           {/* Background Track Circle */}
           <circle
             cx={center}
@@ -94,7 +138,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             className={`${modeStyles.track} transition-colors duration-500`}
           />
 
-          {/* Animated Progress Ring */}
+          {/* Animated Progress Ring with Vibrant Gradient */}
           <circle
             cx={center}
             cy={center}
@@ -104,22 +148,34 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            className={`${modeStyles.stroke} timer-ring`}
+            stroke={`url(#${modeStyles.gradientId})`}
+            filter={status === 'RUNNING' ? 'url(#timerGlow)' : undefined}
+            className="timer-ring"
           />
+
+          {/* Glowing Head Bead */}
+          {remainingRatio > 0.008 && remainingRatio < 0.995 && (
+            <circle
+              cx={dotX}
+              cy={dotY}
+              r={strokeWidth / 2 - 0.5}
+              className="fill-white transition-all duration-150 drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"
+            />
+          )}
         </svg>
 
         {/* Central Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-6">
           {/* Status Badge */}
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium tracking-wide uppercase border mb-1 sm:mb-2 transition-all duration-300 ${modeStyles.bgBadge}`}
+            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide uppercase border mb-1 sm:mb-2 backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.bgBadge}`}
           >
             {getStatusText()}
           </span>
 
           {/* Large Countdown Display */}
           <span
-            className="text-[2.75rem] leading-none sm:text-6xl md:text-7xl font-mono font-light tracking-tighter text-zinc-800 dark:text-zinc-50 tabular-nums transition-colors drop-shadow-sm my-0.5"
+            className="text-[2.75rem] leading-none sm:text-6xl md:text-7xl font-mono font-light tracking-tighter text-zinc-900 dark:text-zinc-50 tabular-nums transition-colors drop-shadow-sm my-0.5"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -133,7 +189,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
                 type="button"
                 onClick={onOpenTasks}
                 title={`Aktif Görev: ${activeTask.title} (Görevleri açmak için tıkla)`}
-                className="flex items-center justify-center gap-1.5 text-xs text-zinc-700 dark:text-zinc-200 bg-white/80 dark:bg-zinc-800/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:scale-102 hover:border-zinc-300 dark:hover:border-zinc-500 transition-all cursor-pointer truncate max-w-full"
+                className="flex items-center justify-center gap-1.5 text-xs text-zinc-700 dark:text-zinc-200 bg-white/80 dark:bg-zinc-800/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-zinc-200/80 dark:border-white/10 shadow-xs hover:scale-102 hover:border-zinc-300 dark:hover:border-zinc-500 transition-all cursor-pointer truncate max-w-full"
               >
                 {activeTask.isCompleted ? (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

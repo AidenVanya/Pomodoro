@@ -10,6 +10,8 @@ import { TaskModal } from './components/TaskModal';
 import { StatsModal } from './components/StatsModal';
 import { SettingsModal } from './components/SettingsModal';
 import { AmbientBar } from './components/AmbientBar';
+import { PullToRefreshIndicator } from './components/PullToRefreshIndicator';
+import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { startAmbientSound, setAmbientVolume, stopAmbientSound } from './utils/audio';
 
 export function App() {
@@ -75,15 +77,40 @@ export function App() {
   const activeTask = tasks.find((t) => t.id === activeTaskId) || null;
   const uncompletedTasksCount = tasks.filter((t) => !t.isCompleted).length;
 
-  // Background tint classes according to mode
+  // Custom touch pull-to-refresh on mobile
+  const { pullDistance, isRefreshing, threshold } = usePullToRefresh();
+
+  // Dynamic Theme Base Background and Text colors
+  const themeBaseClass = {
+    light: 'bg-[#faf8f5] text-stone-800',
+    dark: 'bg-[#0c0d12] text-zinc-100',
+    sunset: 'bg-[#0f0c1b] text-purple-100',
+    forest: 'bg-[#08120d] text-emerald-100',
+    system: isDark ? 'bg-[#0c0d12] text-zinc-100' : 'bg-[#faf8f5] text-stone-800',
+  }[settings.theme] || (isDark ? 'bg-[#0c0d12] text-zinc-100' : 'bg-[#faf8f5] text-stone-800');
+
+  // Background tint classes according to mode and theme
   const bgModeGlow = {
-    FOCUS: 'from-rose-500/5 via-rose-500/2 to-transparent dark:from-rose-950/20 dark:via-rose-950/5',
-    SHORT_BREAK: 'from-emerald-500/5 via-emerald-500/2 to-transparent dark:from-emerald-950/20 dark:via-emerald-950/5',
-    LONG_BREAK: 'from-sky-500/5 via-sky-500/2 to-transparent dark:from-sky-950/20 dark:via-sky-950/5',
+    FOCUS: isDark
+      ? 'from-rose-500/20 via-rose-950/15 to-transparent'
+      : 'from-rose-400/20 via-rose-100/25 to-transparent',
+    SHORT_BREAK: isDark
+      ? 'from-emerald-500/20 via-emerald-950/15 to-transparent'
+      : 'from-emerald-400/20 via-emerald-100/25 to-transparent',
+    LONG_BREAK: isDark
+      ? 'from-sky-500/20 via-sky-950/15 to-transparent'
+      : 'from-sky-400/20 via-sky-100/25 to-transparent',
   }[mode];
 
   return (
-    <div className="h-screen h-dvh max-h-dvh w-full bg-stone-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 flex flex-col justify-between transition-colors duration-500 relative overflow-hidden select-none touch-manipulation">
+    <div className={`min-h-screen min-h-dvh w-full flex flex-col justify-between transition-colors duration-500 relative select-none touch-pan-y ${themeBaseClass}`}>
+      {/* Mobile Pull-to-Refresh Indicator */}
+      <PullToRefreshIndicator
+        pullDistance={pullDistance}
+        isRefreshing={isRefreshing}
+        threshold={threshold}
+      />
+
       {/* Dynamic Background Atmosphere Glow */}
       <div
         className={`pointer-events-none fixed inset-0 bg-radial-[at_50%_25%] ${bgModeGlow} transition-colors duration-700`}
@@ -101,7 +128,7 @@ export function App() {
       />
 
       {/* Pure Zen Center: Responsive for both mobile and desktop screens */}
-      <main className="flex-1 w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-evenly relative z-10 py-1 sm:py-3 md:py-4 overflow-hidden">
+      <main className="flex-1 w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-evenly relative z-10 py-1 sm:py-3 md:py-4">
         {/* Mode Selector */}
         <ModeSelector
           currentMode={mode}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { PomodoroSettings, SoundTheme } from '../types/pomodoro';
 import { playAlertSound } from '../utils/audio';
 import { isNotificationSupported, requestNotificationPermission } from '../utils/notifications';
-import { X, Volume2, Bell, Sliders, Clock, PlayCircle, Keyboard, Sun, Moon, Laptop, Palette } from 'lucide-react';
+import { X, Volume2, Bell, Sliders, Clock, PlayCircle, Keyboard, Sun, Moon, Laptop, Palette, Sunset, Trees } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -360,18 +360,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <Palette className="w-4 h-4 text-zinc-500" />
               <span>Görünüm / Tema</span>
             </h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               <button
                 type="button"
                 onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'light' }))}
                 className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
                   localSettings.theme === 'light'
-                    ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 ring-2 ring-amber-500/20'
-                    : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                    ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 ring-2 ring-amber-500/20 shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                 }`}
               >
                 <Sun className="w-4 h-4 mb-1 text-amber-500" />
-                <span>Aydınlık</span>
+                <span className="font-semibold">Zen Kağıt</span>
+                <span className="text-[10px] opacity-70">Aydınlık</span>
               </button>
 
               <button
@@ -379,25 +380,55 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'dark' }))}
                 className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
                   localSettings.theme === 'dark'
-                    ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-500/20'
-                    : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                    ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 ring-2 ring-rose-500/20 shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                 }`}
               >
-                <Moon className="w-4 h-4 mb-1 text-indigo-500" />
-                <span>Karanlık</span>
+                <Moon className="w-4 h-4 mb-1 text-rose-400" />
+                <span className="font-semibold">Obsidyen</span>
+                <span className="text-[10px] opacity-70">Karanlık</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'sunset' }))}
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
+                  localSettings.theme === 'sunset'
+                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300 ring-2 ring-purple-500/20 shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                }`}
+              >
+                <Sunset className="w-4 h-4 mb-1 text-purple-400" />
+                <span className="font-semibold">Kızıl Akşam</span>
+                <span className="text-[10px] opacity-70">Alacakaranlık</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'forest' }))}
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
+                  localSettings.theme === 'forest'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                }`}
+              >
+                <Trees className="w-4 h-4 mb-1 text-emerald-500" />
+                <span className="font-semibold">Zümrüt Doğa</span>
+                <span className="text-[10px] opacity-70">Matcha & Orman</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'system' }))}
-                className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
+                className={`col-span-2 sm:col-span-1 flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${
                   localSettings.theme === 'system'
-                    ? 'border-zinc-500 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 ring-2 ring-zinc-500/20'
-                    : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                    ? 'border-zinc-500 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 ring-2 ring-zinc-500/20 shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                 }`}
               >
                 <Laptop className="w-4 h-4 mb-1 text-zinc-500" />
-                <span>Sistem</span>
+                <span className="font-semibold">Sistem</span>
+                <span className="text-[10px] opacity-70">Otomatik</span>
               </button>
             </div>
           </div>

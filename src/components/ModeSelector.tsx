@@ -19,17 +19,17 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
     {
       id: 'FOCUS',
       label: 'Odaklan',
-      icon: <Sparkles className="w-4 h-4" />,
+      icon: <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
     },
     {
       id: 'SHORT_BREAK',
       label: 'Kısa Mola',
-      icon: <Coffee className="w-4 h-4" />,
+      icon: <Coffee className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
     },
     {
       id: 'LONG_BREAK',
       label: 'Uzun Mola',
-      icon: <Armchair className="w-4 h-4" />,
+      icon: <Armchair className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
     },
   ];
 
@@ -63,22 +63,22 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
   }, [currentMode]);
 
   const activeModeBg = {
-    FOCUS: 'bg-rose-500 shadow-rose-500/25',
-    SHORT_BREAK: 'bg-emerald-600 shadow-emerald-600/25',
-    LONG_BREAK: 'bg-sky-600 shadow-sky-600/25',
+    FOCUS: 'bg-gradient-to-r from-rose-500 to-rose-600 shadow-md shadow-rose-500/30 text-white',
+    SHORT_BREAK: 'bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-md shadow-emerald-500/30 text-white',
+    LONG_BREAK: 'bg-gradient-to-r from-sky-500 to-indigo-600 shadow-md shadow-sky-500/30 text-white',
   }[currentMode];
 
   return (
-    <div className="flex flex-col items-center gap-2 sm:gap-3 shrink-0 select-none">
+    <div className="flex flex-col items-center gap-2 sm:gap-2.5 shrink-0 select-none">
       {/* Segmented Mode Track with Sliding Pill */}
       <div
         role="tablist"
         aria-label="Pomodoro Zamanlayıcı Modları"
-        className="relative inline-flex p-1 sm:p-1.5 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-700/60 shadow-xs sm:shadow-sm"
+        className="relative inline-flex p-1 rounded-2xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border border-zinc-200/80 dark:border-white/10 shadow-xs sm:shadow-sm"
       >
         {/* Animated Sliding Pill */}
         <div
-          className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-xl text-white shadow-md transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none ${activeModeBg}`}
+          className={`absolute top-1 bottom-1 rounded-xl shadow-sm transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none ${activeModeBg}`}
           style={{
             transform: `translateX(${indicatorStyle.left}px)`,
             width: `${indicatorStyle.width}px`,
@@ -98,9 +98,9 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
               role="tab"
               aria-selected={isActive}
               onClick={() => onSelectMode(mode.id)}
-              className={`relative z-10 flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-offset-zinc-900 cursor-pointer ${
+              className={`relative z-10 flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-offset-zinc-900 cursor-pointer ${
                 isActive
-                  ? 'text-white'
+                  ? 'text-white font-semibold'
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
@@ -112,25 +112,25 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
       </div>
 
       {/* Rounds indicator */}
-      <div className="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm font-medium text-zinc-500 dark:text-zinc-400">
-        <span>Döngü {round} / {maxRounds}</span>
-        <div className="flex items-center gap-1.5 sm:gap-2 ml-1" aria-label={`Döngü ${round} / ${maxRounds}`}>
+      <div className="flex items-center gap-2 sm:gap-2.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        <span className="text-[11px] sm:text-xs">Döngü {round} / {maxRounds}</span>
+        <div className="flex items-center gap-1.5 ml-0.5" aria-label={`Döngü ${round} / ${maxRounds}`}>
           {Array.from({ length: maxRounds }).map((_, index) => {
             const isCompleted = index + 1 < round;
             const isCurrent = index + 1 === round;
 
-            let dotColor = 'bg-zinc-300 dark:bg-zinc-700';
+            let dotColor = 'bg-zinc-300 dark:bg-zinc-700/80';
             if (isCompleted || isCurrent) {
-              if (currentMode === 'FOCUS') dotColor = 'bg-rose-500';
-              else if (currentMode === 'SHORT_BREAK') dotColor = 'bg-emerald-500';
-              else dotColor = 'bg-sky-500';
+              if (currentMode === 'FOCUS') dotColor = 'bg-rose-500 shadow-xs shadow-rose-500/50';
+              else if (currentMode === 'SHORT_BREAK') dotColor = 'bg-emerald-500 shadow-xs shadow-emerald-500/50';
+              else dotColor = 'bg-sky-500 shadow-xs shadow-sky-500/50';
             }
 
             return (
               <span
                 key={index}
                 className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 ${dotColor} ${
-                  isCurrent ? 'ring-2 ring-offset-1 ring-zinc-300 dark:ring-zinc-600 dark:ring-offset-zinc-900 scale-125' : ''
+                  isCurrent ? 'ring-2 ring-offset-1 ring-zinc-400 dark:ring-zinc-500 dark:ring-offset-zinc-900 scale-125' : ''
                 }`}
               />
             );

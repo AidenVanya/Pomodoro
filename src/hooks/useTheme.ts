@@ -5,7 +5,7 @@ export function useTheme(initialTheme: AppTheme = 'system') {
   const [theme, setTheme] = useState<AppTheme>(initialTheme);
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
-    if (initialTheme === 'dark') return true;
+    if (initialTheme === 'dark' || initialTheme === 'sunset' || initialTheme === 'forest') return true;
     if (initialTheme === 'light') return false;
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
@@ -14,13 +14,16 @@ export function useTheme(initialTheme: AppTheme = 'system') {
     const root = document.documentElement;
 
     const computeIsDark = () => {
-      if (theme === 'dark') return true;
+      if (theme === 'dark' || theme === 'sunset' || theme === 'forest') return true;
       if (theme === 'light') return false;
       return window.matchMedia('(prefers-color-scheme: dark)').matches;
     };
 
     const dark = computeIsDark();
     setIsDark(dark);
+
+    // Set custom data-theme for fine-grained CSS themes
+    root.setAttribute('data-theme', theme);
 
     if (dark) {
       root.classList.add('dark');
@@ -49,7 +52,7 @@ export function useTheme(initialTheme: AppTheme = 'system') {
   }, [theme]);
 
   const toggleTheme = (): AppTheme => {
-    // If currently dark, always switch directly to light
+    // If on a dark-toned theme, switch to light; if on light, switch to dark
     const nextTheme: AppTheme = isDark ? 'light' : 'dark';
     setTheme(nextTheme);
     return nextTheme;

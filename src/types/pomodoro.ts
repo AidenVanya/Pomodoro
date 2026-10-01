@@ -6,7 +6,7 @@ export type SoundTheme = 'zen-bell' | 'singing-bowl' | 'digital' | 'marimba';
 
 export type AmbientSoundType = 'none' | 'rain' | 'white-noise' | 'cafe';
 
-export type AppTheme = 'system' | 'light' | 'dark';
+export type AppTheme = 'system' | 'light' | 'dark' | 'sunset' | 'forest';
 
 export interface PomodoroSettings {
   focusDuration: number; // in minutes (e.g. 25)
