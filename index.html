@@ -19,5 +19,18 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Clean up any external injected Netlify widgets/badges
+      const removeNetlifyWidgets = () => {
+        document.querySelectorAll('netlify-drawer, [data-netlify-drawer], iframe[src*="netlify"], a[href*="netlify.com"]').forEach((el) => el.remove());
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', removeNetlifyWidgets);
+      } else {
+        removeNetlifyWidgets();
+      }
+      setTimeout(removeNetlifyWidgets, 1000);
+      setTimeout(removeNetlifyWidgets, 2500);
+    </script>
   </body>
 </html>

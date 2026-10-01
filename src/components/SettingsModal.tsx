@@ -372,12 +372,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl overflow-hidden border border-amber-500/40 shadow-xs shrink-0 bg-black/60 p-0.5">
-                    <img
-                      src="/chronos-logo.jpg"
-                      alt="Chronos Logo"
-                      className="w-full h-full object-cover object-center rounded-lg"
-                    />
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400">
+                    <Clock className="w-4 h-4" />
                   </div>
                   <div className="text-left">
                     <span className="font-bold text-sm block text-amber-200">CHRONOS • Zamanın Titanı</span>

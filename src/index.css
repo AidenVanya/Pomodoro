@@ -204,3 +204,26 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(245, 158, 11, 0.6);
 }
+
+/* Hide any Netlify-injected Drawer, Badge, or "Powered by Netlify" widgets */
+[data-netlify-drawer],
+netlify-drawer,
+#netlify-badge,
+.netlify-badge,
+iframe[src*="netlify"],
+iframe[id*="netlify"],
+iframe[title*="Netlify"],
+a[href*="netlify.com"],
+a[href*="netlify.app"],
+div[class*="netlify"],
+div[id*="netlify"],
+[id*="netlify-drawer"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0) !important;
+}

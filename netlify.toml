@@ -1,0 +1,7 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  # Disable Netlify drawer & collaborative deploy preview badge/widget
+  NETLIFY_DEPLOY_PREVIEWS = "false"
