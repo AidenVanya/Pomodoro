@@ -93,11 +93,11 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   return (
     <div className="relative flex flex-col items-center justify-center my-1 sm:my-3 select-none shrink-0 w-full max-w-sm sm:max-w-md mx-auto">
       {/* Visual Mode Selector: Çarklar / Kum Saati / Bütünleşik */}
-      <div className="flex items-center gap-1 mb-2 px-2 py-1 rounded-full bg-black/40 border border-amber-500/20 backdrop-blur-md z-20 shadow-xs">
+      <div className="flex items-center gap-0.5 sm:gap-1 mb-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-black/40 border border-amber-500/20 backdrop-blur-md z-20 shadow-xs">
         <button
           type="button"
           onClick={() => setVisualMode('combined')}
-          className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-chronos transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-chronos transition-all cursor-pointer ${
             visualMode === 'combined'
               ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
               : 'text-amber-200/70 hover:text-amber-100'
@@ -111,7 +111,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         <button
           type="button"
           onClick={() => setVisualMode('gears')}
-          className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-chronos transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-chronos transition-all cursor-pointer ${
             visualMode === 'gears'
               ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
               : 'text-amber-200/70 hover:text-amber-100'
@@ -125,7 +125,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         <button
           type="button"
           onClick={() => setVisualMode('hourglass')}
-          className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-chronos transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-chronos transition-all cursor-pointer ${
             visualMode === 'hourglass'
               ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
               : 'text-amber-200/70 hover:text-amber-100'
@@ -303,13 +303,13 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
           )}
 
           {/* Active Task Indicator inside circle */}
-          <div className="mt-1.5 max-w-[210px] truncate">
+          <div className="mt-1 sm:mt-1.5 max-w-[170px] xs:max-w-[200px] sm:max-w-[230px] truncate">
             {activeTask ? (
               <button
                 type="button"
                 onClick={onOpenTasks}
                 title={`Aktif Görev: ${activeTask.title} (Görevleri açmak için tıkla)`}
-                className="flex items-center justify-center gap-1.5 text-[11px] text-amber-200 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/30 shadow-xs hover:border-amber-400 transition-all cursor-pointer truncate max-w-full font-chronos"
+                className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-amber-200 bg-black/60 backdrop-blur-md px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-amber-500/30 shadow-xs hover:border-amber-400 transition-all cursor-pointer truncate max-w-full font-chronos"
               >
                 {activeTask.isCompleted ? (
                   <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />

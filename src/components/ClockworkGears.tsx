@@ -15,7 +15,6 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
   className = '',
 }) => {
   const isRunning = status === 'RUNNING';
-  const isPaused = status === 'PAUSED';
 
   // Roman numerals on the Chronos Astrolabe dial (as in the boss arena floor)
   const romanNumerals = ['XII', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
@@ -104,64 +103,11 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
         </defs>
 
         {/* ======================================================== */}
-        {/* INTERLOCKING SATELLITE GEAR 1: Top-Left Bronze Cogwheel  */}
-        {/* ======================================================== */}
-        <g
-          className={`origin-[75px_75px] ${isRunning ? 'animate-spin-ccw' : isPaused ? 'paused' : 'opacity-80'}`}
-          style={{ transformOrigin: '75px 75px' }}
-        >
-          {/* Shadow & Teeth */}
-          <path
-            d={generateGearPath(75, 75, 72, 60, 16)}
-            fill="url(#chronosBronze)"
-            stroke="#fbbf24"
-            strokeWidth="1.5"
-            strokeOpacity="0.4"
-            filter="url(#gearShadow)"
-          />
-          {/* Inner ring */}
-          <circle cx="75" cy="75" r="44" fill="#090d14" stroke="#d97706" strokeWidth="2" strokeDasharray="3 4" />
-          {/* Cutout spokes */}
-          <line x1="75" y1="35" x2="75" y2="115" stroke="#fbbf24" strokeWidth="2" strokeOpacity="0.6" />
-          <line x1="35" y1="75" x2="115" y2="75" stroke="#fbbf24" strokeWidth="2" strokeOpacity="0.6" />
-          <line x1="47" y1="47" x2="103" y2="103" stroke="#fbbf24" strokeWidth="2" strokeOpacity="0.6" />
-          <line x1="47" y1="103" x2="103" y2="47" stroke="#fbbf24" strokeWidth="2" strokeOpacity="0.6" />
-          {/* Center Axle Nut */}
-          <circle cx="75" cy="75" r="14" fill="url(#chronosGold)" stroke="#78350f" strokeWidth="2" />
-          <circle cx="75" cy="75" r="5" fill="#18181b" />
-        </g>
-
-        {/* ======================================================== */}
-        {/* INTERLOCKING SATELLITE GEAR 2: Bottom-Right Gold Cogwheel*/}
-        {/* ======================================================== */}
-        <g
-          className={`origin-[425px_415px] ${isRunning ? 'animate-spin-ccw-fast' : isPaused ? 'paused' : 'opacity-80'}`}
-          style={{ transformOrigin: '425px 415px' }}
-        >
-          {/* Teeth */}
-          <path
-            d={generateGearPath(425, 415, 62, 52, 14)}
-            fill="url(#chronosBronze)"
-            stroke="#fbbf24"
-            strokeWidth="1.5"
-            strokeOpacity="0.5"
-            filter="url(#gearShadow)"
-          />
-          <circle cx="425" cy="415" r="36" fill="#090d14" stroke="#d97706" strokeWidth="2" />
-          {/* Triangular spoke cutouts */}
-          <circle cx="425" cy="415" r="24" fill="none" stroke="#fbbf24" strokeWidth="1" strokeDasharray="2 3" />
-          <line x1="425" y1="385" x2="425" y2="445" stroke="#fbbf24" strokeWidth="2" strokeOpacity="0.6" />
-          <line x1="395" y1="415" x2="455" y2="415" stroke="#fbbf24" strokeWidth="2" strokeOpacity="0.6" />
-          {/* Center Hub */}
-          <circle cx="425" cy="415" r="12" fill="url(#chronosGold)" stroke="#78350f" strokeWidth="1.5" />
-          <circle cx="425" cy="415" r="4" fill="#090d14" />
-        </g>
-
-        {/* ======================================================== */}
         {/* MAIN ASTROLABE GEAR: The Great Wheel of Chronos (Center) */}
+        {/* Constantly spins smoothly to honor the Titan of Time     */}
         {/* ======================================================== */}
         <g
-          className={`origin-[250px_250px] ${isRunning ? 'animate-spin-cw' : isPaused ? 'paused' : 'opacity-90'}`}
+          className="origin-[250px_250px] animate-spin-cw"
           style={{ transformOrigin: '250px 250px' }}
         >
           {/* Great Outer Spiky Gear Teeth (Hades II Clockwork Cathedral Style) */}

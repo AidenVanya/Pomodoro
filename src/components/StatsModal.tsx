@@ -38,18 +38,18 @@ export const StatsModal: React.FC<StatsModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="stats-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-[#0a0e14] text-amber-100 rounded-3xl border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[85dvh] m-auto font-chronos"
+        className="w-full max-w-lg bg-[#0a0e14] text-amber-100 rounded-2xl sm:rounded-3xl border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[85dvh] m-auto font-chronos"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-amber-500/20 bg-black/40">
-          <div className="flex items-center gap-2">
-            <Hourglass className="w-5 h-5 text-amber-400" />
-            <h2 id="stats-modal-title" className="text-lg font-bold text-amber-200">
+        <div className="flex items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 border-b border-amber-500/20 bg-black/40">
+          <div className="flex items-center gap-2 min-w-0">
+            <Hourglass className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 shrink-0" />
+            <h2 id="stats-modal-title" className="text-base sm:text-lg font-bold text-amber-200 truncate">
               Zamanın Kayıtları (İstatistik)
             </h2>
           </div>
@@ -58,16 +58,16 @@ export const StatsModal: React.FC<StatsModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Kapat"
-            className="p-1.5 rounded-xl text-amber-400/60 hover:text-amber-200 hover:bg-amber-500/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-amber-400/60 hover:text-amber-200 hover:bg-amber-500/10 transition-colors cursor-pointer shrink-0 ml-2"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto space-y-6">
+        <div className="p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6">
           {/* Metric cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
             <div className="p-3.5 rounded-2xl bg-black/40 border border-amber-500/20 flex flex-col">
               <div className="flex items-center gap-1.5 text-amber-400/70 text-xs mb-1">
                 <Clock className="w-3.5 h-3.5 text-amber-400" />

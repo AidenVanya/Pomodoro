@@ -23,36 +23,36 @@ export const Header: React.FC<HeaderProps> = ({
   isInstallable,
 }) => {
   return (
-    <header className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto flex items-center justify-between pt-[max(0.6rem,env(safe-area-inset-top))] pb-1 sm:pb-3 px-3 sm:px-6 md:px-8 shrink-0 select-none relative z-20">
+    <header className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto flex items-center justify-between pt-[max(0.6rem,env(safe-area-inset-top))] pb-1 sm:pb-3 px-2.5 sm:px-6 md:px-8 shrink-0 select-none relative z-20">
       {/* Left: Tasks Button */}
       <button
         type="button"
         onClick={onOpenTasks}
         title="Görevler Listesi"
         aria-label="Görevler Listesi"
-        className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-amber-500/30 hover:border-amber-400/60 text-amber-200 hover:text-amber-100 transition-all cursor-pointer text-xs font-chronos font-semibold shadow-xs"
+        className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-amber-500/30 hover:border-amber-400/60 text-amber-200 hover:text-amber-100 transition-all cursor-pointer text-[11px] sm:text-xs font-chronos font-semibold shadow-xs"
       >
         <Hourglass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
         <span>Görevler</span>
         {uncompletedTasksCount > 0 && (
-          <span className="px-1.5 py-0.2 rounded-full bg-gradient-to-r from-amber-600 to-amber-500 text-black text-[10px] font-bold shadow-xs">
+          <span className="px-1.5 py-0.2 rounded-full bg-gradient-to-r from-amber-600 to-amber-500 text-black text-[9px] sm:text-[10px] font-bold shadow-xs">
             {uncompletedTasksCount}
           </span>
         )}
       </button>
 
       {/* Center: Mythical Chronos Title Branding */}
-      <div className="flex flex-col items-center justify-center text-center">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-chronos-deco font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-emerald-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] leading-tight">
+      <div className="flex flex-col items-center justify-center text-center px-1">
+        <h1 className="text-lg sm:text-2xl md:text-3xl font-chronos-deco font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-emerald-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] leading-tight">
           CHRONOS
         </h1>
-        <span className="text-[9px] sm:text-[10px] font-chronos tracking-[0.25em] text-amber-400/80 uppercase">
+        <span className="text-[8px] sm:text-[10px] font-chronos tracking-[0.2em] sm:tracking-[0.25em] text-amber-400/80 uppercase">
           Titan of Time
         </span>
       </div>
 
       {/* Right Action Buttons */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         {/* PWA Install Button */}
         {isInstallable && onInstallApp && (
           <button
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={onInstallApp}
             title="Uygulamayı Cihaza Yükle / İndir"
             aria-label="Uygulamayı İndir"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-600/30 to-amber-500/20 hover:from-amber-600/50 hover:to-amber-500/40 border border-amber-400/50 text-amber-200 hover:text-white transition-all cursor-pointer text-xs font-chronos font-bold shadow-xs"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-600/30 to-amber-500/20 hover:from-amber-600/50 hover:to-amber-500/40 border border-amber-400/50 text-amber-200 hover:text-white transition-all cursor-pointer text-[11px] sm:text-xs font-chronos font-bold shadow-xs"
           >
             <Download className="w-3.5 h-3.5 text-amber-300" />
             <span className="hidden xs:inline">İndir</span>

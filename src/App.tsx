@@ -200,8 +200,8 @@ export function App() {
       </main>
 
       {/* Minimal Footer with Chronos Time Proverb */}
-      <footer className="w-full pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1 sm:pt-2 text-center text-xs text-amber-400/60 relative z-10 shrink-0 font-chronos">
-        <p className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs tracking-wider opacity-80">
+      <footer className="w-full pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1 sm:pt-2 px-3 text-center text-xs text-amber-400/60 relative z-10 shrink-0 font-chronos">
+        <p className="flex items-center justify-center gap-1.5 text-[10px] sm:text-xs tracking-wider opacity-80 px-2">
           <span>⏳</span>
           <span className="italic">"Zaman, ölümlülerin en kıymetli hazinesidir; her saniye bir zaferdir."</span>
           <span>⚜</span>
