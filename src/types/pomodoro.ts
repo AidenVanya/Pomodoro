@@ -2,11 +2,13 @@ export type TimerStatus = 'IDLE' | 'RUNNING' | 'PAUSED';
 
 export type TimerMode = 'FOCUS' | 'SHORT_BREAK' | 'LONG_BREAK';
 
-export type SoundTheme = 'zen-bell' | 'singing-bowl' | 'digital' | 'marimba';
+export type SoundTheme = 'chronos-bell' | 'zen-bell' | 'singing-bowl' | 'digital' | 'marimba';
 
-export type AmbientSoundType = 'none' | 'rain' | 'white-noise' | 'cafe';
+export type AmbientSoundType = 'none' | 'clockwork' | 'rain' | 'white-noise' | 'cafe';
 
-export type AppTheme = 'system' | 'light' | 'dark' | 'sunset' | 'forest';
+export type AppTheme = 'chronos' | 'system' | 'light' | 'dark' | 'sunset' | 'forest';
+
+export type TimerVisualMode = 'gears' | 'hourglass' | 'combined';
 
 export interface PomodoroSettings {
   focusDuration: number; // in minutes (e.g. 25)
@@ -22,6 +24,7 @@ export interface PomodoroSettings {
   ambientSound: AmbientSoundType;
   ambientVolume: number; // 0 - 100
   theme: AppTheme;
+  timerVisualMode?: TimerVisualMode;
 }
 
 export interface Task {

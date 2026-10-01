@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { PomodoroSettings, SoundTheme } from '../types/pomodoro';
 import { playAlertSound } from '../utils/audio';
 import { isNotificationSupported, requestNotificationPermission } from '../utils/notifications';
-import { X, Volume2, Bell, Sliders, Clock, PlayCircle, Keyboard, Sun, Moon, Laptop, Palette, Sunset, Trees } from 'lucide-react';
+import { X, Volume2, Bell, Sliders, Clock, PlayCircle, Keyboard, Sun, Moon, Laptop, Palette, Sunset, Trees, Hourglass } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -273,6 +273,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         }
                         className="px-3 py-1.5 text-xs rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 focus:outline-none"
                       >
+                        <option value="chronos-bell">Titan Çanı (Chronos Zili)</option>
                         <option value="zen-bell">Zen Çanı (Gong)</option>
                         <option value="singing-bowl">Tibet Kasesi</option>
                         <option value="digital">Dijital Çan</option>
@@ -361,6 +362,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <span>Görünüm / Tema</span>
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'chronos' }))}
+                className={`col-span-2 sm:col-span-3 flex items-center justify-between p-3.5 rounded-2xl border text-xs font-chronos font-medium transition-all cursor-pointer ${
+                  localSettings.theme === 'chronos'
+                    ? 'border-amber-400 bg-amber-500/15 text-amber-200 ring-2 ring-amber-400/30 shadow-md shadow-amber-500/20'
+                    : 'border-amber-500/30 bg-black/40 hover:bg-black/60 text-amber-200/80'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Hourglass className="w-5 h-5 text-amber-400 shrink-0" />
+                  <div className="text-left">
+                    <span className="font-bold text-sm block text-amber-200">CHRONOS • Zamanın Titanı</span>
+                    <span className="text-[10px] text-amber-400/70">Dönen Çarklar, Antik Kum Saati & Hades II</span>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-widest">
+                  Önerilen
+                </span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setLocalSettings((prev) => ({ ...prev, theme: 'light' }))}

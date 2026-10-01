@@ -82,22 +82,30 @@ export function App() {
 
   // Dynamic Theme Base Background and Text colors
   const themeBaseClass = {
+    chronos: 'bg-[#06090d] text-amber-100',
     light: 'bg-[#faf8f5] text-stone-800',
     dark: 'bg-[#0c0d12] text-zinc-100',
     sunset: 'bg-[#0f0c1b] text-purple-100',
     forest: 'bg-[#08120d] text-emerald-100',
-    system: isDark ? 'bg-[#0c0d12] text-zinc-100' : 'bg-[#faf8f5] text-stone-800',
-  }[settings.theme] || (isDark ? 'bg-[#0c0d12] text-zinc-100' : 'bg-[#faf8f5] text-stone-800');
+    system: isDark ? 'bg-[#06090d] text-amber-100' : 'bg-[#faf8f5] text-stone-800',
+  }[settings.theme] || 'bg-[#06090d] text-amber-100';
 
-  // Background tint classes according to mode and theme
+  // Background tint classes according to mode and theme (Chronos gold & underworld emerald)
+  const isChronos = settings.theme === 'chronos' || settings.theme === 'system';
   const bgModeGlow = {
-    FOCUS: isDark
+    FOCUS: isChronos
+      ? 'from-amber-600/20 via-emerald-950/25 to-transparent'
+      : isDark
       ? 'from-rose-500/20 via-rose-950/15 to-transparent'
       : 'from-rose-400/20 via-rose-100/25 to-transparent',
-    SHORT_BREAK: isDark
+    SHORT_BREAK: isChronos
+      ? 'from-emerald-600/25 via-teal-950/25 to-transparent'
+      : isDark
       ? 'from-emerald-500/20 via-emerald-950/15 to-transparent'
       : 'from-emerald-400/20 via-emerald-100/25 to-transparent',
-    LONG_BREAK: isDark
+    LONG_BREAK: isChronos
+      ? 'from-sky-600/25 via-indigo-950/25 to-transparent'
+      : isDark
       ? 'from-sky-500/20 via-sky-950/15 to-transparent'
       : 'from-sky-400/20 via-sky-100/25 to-transparent',
   }[mode];
@@ -110,6 +118,15 @@ export function App() {
         isRefreshing={isRefreshing}
         threshold={threshold}
       />
+
+      {/* Floating Cosmic Time Shards & Stardust in the Void (Chronos aesthetic) */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0 opacity-40">
+        <div className="absolute top-[12%] left-[8%] w-1.5 h-1.5 bg-amber-400 rounded-full animate-time-particle" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-[28%] right-[12%] w-2 h-2 bg-emerald-400 rounded-full animate-time-particle" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[65%] left-[15%] w-1 h-1 bg-yellow-300 rounded-full animate-time-particle" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-[75%] right-[20%] w-2 h-2 bg-amber-300 rounded-full animate-time-particle" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-[45%] left-[85%] w-1.5 h-1.5 bg-emerald-300 rounded-full animate-time-particle" style={{ animationDelay: '3s' }} />
+      </div>
 
       {/* Dynamic Background Atmosphere Glow */}
       <div
@@ -128,7 +145,7 @@ export function App() {
       />
 
       {/* Pure Zen Center: Responsive for both mobile and desktop screens */}
-      <main className="flex-1 w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-evenly relative z-10 py-1 sm:py-3 md:py-4">
+      <main className="flex-1 w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-6 flex flex-col items-center justify-evenly relative z-10 py-1 sm:py-2 md:py-3">
         {/* Mode Selector */}
         <ModeSelector
           currentMode={mode}
@@ -137,7 +154,7 @@ export function App() {
           maxRounds={settings.longBreakInterval}
         />
 
-        {/* Circular Timer Display */}
+        {/* Circular Timer Display with Rotating Gears and Golden Hourglass */}
         <TimerDisplay
           remainingSeconds={remainingSeconds}
           totalDurationSeconds={totalDurationSeconds}
@@ -145,6 +162,7 @@ export function App() {
           status={status}
           activeTask={activeTask}
           onOpenTasks={() => setIsTaskModalOpen(true)}
+          initialVisualMode={settings.timerVisualMode || 'combined'}
         />
 
         {/* Controls */}
@@ -165,29 +183,35 @@ export function App() {
         />
       </main>
 
-      {/* Minimal Footer with Bottom Safe Area on Mobile, Full Shortcuts Bar on Desktop */}
-      <footer className="w-full pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1 sm:pt-3 text-center text-xs text-zinc-400 dark:text-zinc-500 relative z-10 shrink-0">
-        <p className="hidden sm:flex items-center justify-center gap-3">
-          <span className="font-medium text-zinc-500 dark:text-zinc-400">Kısayollar:</span>
-          <span className="inline-flex items-center gap-1.5">
-            <kbd className="px-2 py-0.5 rounded-md bg-zinc-200/80 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-[11px] shadow-xs border border-zinc-300/80 dark:border-zinc-700">
+      {/* Minimal Footer with Chronos Time Proverb */}
+      <footer className="w-full pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1 sm:pt-2 text-center text-xs text-amber-400/60 relative z-10 shrink-0 font-chronos">
+        <p className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs tracking-wider opacity-80">
+          <span>⏳</span>
+          <span className="italic">"Zaman, ölümlülerin en kıymetli hazinesidir; her saniye bir zaferdir."</span>
+          <span>⚜</span>
+        </p>
+
+        <p className="hidden sm:flex items-center justify-center gap-3 mt-1 text-[11px] text-amber-500/50">
+          <span className="font-semibold text-amber-400/70">Kısayollar:</span>
+          <span className="inline-flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 rounded bg-black/60 text-amber-300 font-mono text-[10px] border border-amber-500/30">
               Space
             </kbd>
-            <span>Başlat / Duraklat</span>
+            <span>Dondur / Başlat</span>
           </span>
-          <span className="text-zinc-300 dark:text-zinc-700">•</span>
-          <span className="inline-flex items-center gap-1.5">
-            <kbd className="px-2 py-0.5 rounded-md bg-zinc-200/80 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-[11px] shadow-xs border border-zinc-300/80 dark:border-zinc-700">
+          <span>•</span>
+          <span className="inline-flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 rounded bg-black/60 text-amber-300 font-mono text-[10px] border border-amber-500/30">
               R
             </kbd>
-            <span>Sıfırla</span>
+            <span>Geri Al</span>
           </span>
-          <span className="text-zinc-300 dark:text-zinc-700">•</span>
-          <span className="inline-flex items-center gap-1.5">
-            <kbd className="px-2 py-0.5 rounded-md bg-zinc-200/80 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-[11px] shadow-xs border border-zinc-300/80 dark:border-zinc-700">
+          <span>•</span>
+          <span className="inline-flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 rounded bg-black/60 text-amber-300 font-mono text-[10px] border border-amber-500/30">
               S
             </kbd>
-            <span>Seansı Atla</span>
+            <span>İleri Sar</span>
           </span>
         </p>
       </footer>

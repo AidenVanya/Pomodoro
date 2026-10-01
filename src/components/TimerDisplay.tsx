@@ -1,7 +1,9 @@
-import React from 'react';
-import type { Task, TimerMode, TimerStatus } from '../types/pomodoro';
+import React, { useState } from 'react';
+import type { Task, TimerMode, TimerStatus, TimerVisualMode } from '../types/pomodoro';
 import { formatTime } from '../utils/formatters';
-import { Target, CheckCircle2 } from 'lucide-react';
+import { Target, CheckCircle2, Cog, Hourglass, Sparkles } from 'lucide-react';
+import { ClockworkGears } from './ClockworkGears';
+import { ChronosHourglass } from './ChronosHourglass';
 
 interface TimerDisplayProps {
   remainingSeconds: number;
@@ -10,6 +12,7 @@ interface TimerDisplayProps {
   status: TimerStatus;
   activeTask: Task | null;
   onOpenTasks?: () => void;
+  initialVisualMode?: TimerVisualMode;
 }
 
 export const TimerDisplay: React.FC<TimerDisplayProps> = ({
@@ -19,12 +22,15 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   status,
   activeTask,
   onOpenTasks,
+  initialVisualMode = 'combined',
 }) => {
+  const [visualMode, setVisualMode] = useState<TimerVisualMode>(initialVisualMode);
+
   // SVG Geometry constants
   const size = 320;
-  const strokeWidth = 10;
+  const strokeWidth = 8;
   const center = size / 2;
-  const radius = center - strokeWidth - 6;
+  const radius = center - strokeWidth - 14;
   const circumference = 2 * Math.PI * radius;
 
   // Fraction of remaining time (1 -> full ring, 0 -> empty ring)
@@ -41,86 +47,155 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   const dotX = center + radius * Math.cos(progressAngle);
   const dotY = center + radius * Math.sin(progressAngle);
 
-  // Mode-based color configurations
+  // Chronos / Hades II Mode Color Palette
   const modeStyles = {
     FOCUS: {
-      gradientId: 'gradient-focus',
-      auraBg: 'bg-gradient-to-tr from-rose-500/40 via-pink-500/25 to-amber-500/20',
-      track: 'stroke-rose-950/5 dark:stroke-white/5',
-      glow: 'shadow-rose-500/15 dark:shadow-rose-500/20',
-      bgBadge: 'bg-rose-500/10 text-rose-600 dark:text-rose-300 border-rose-300/40 dark:border-rose-500/20',
-      label: 'Odaklanma Zamanı',
-      activeLabel: 'Derin Odak',
+      gradientId: 'gradient-chronos-gold',
+      auraBg: 'bg-gradient-to-tr from-amber-600/35 via-emerald-600/20 to-yellow-500/25',
+      track: 'stroke-amber-950/20 dark:stroke-amber-400/10',
+      glow: 'shadow-amber-500/20 dark:shadow-amber-500/25',
+      badgeBorder: 'border-amber-500/40 dark:border-amber-400/30',
+      badgeBg: 'bg-amber-500/15 text-amber-600 dark:text-amber-300',
+      label: 'Zamanın Hükmü',
+      activeLabel: 'Kronos Akışı (Derin Odak)',
+      pausedLabel: 'Zaman Donduruldu',
     },
     SHORT_BREAK: {
-      gradientId: 'gradient-short-break',
-      auraBg: 'bg-gradient-to-tr from-emerald-500/40 via-teal-500/25 to-cyan-500/20',
-      track: 'stroke-emerald-950/5 dark:stroke-white/5',
-      glow: 'shadow-emerald-500/15 dark:shadow-emerald-500/20',
-      bgBadge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-300/40 dark:border-emerald-500/20',
-      label: 'Kısa Mola',
-      activeLabel: 'Nefes Al ve Dinlen',
+      gradientId: 'gradient-chronos-emerald',
+      auraBg: 'bg-gradient-to-tr from-emerald-600/35 via-teal-600/20 to-green-500/25',
+      track: 'stroke-emerald-950/20 dark:stroke-emerald-400/10',
+      glow: 'shadow-emerald-500/20 dark:shadow-emerald-500/25',
+      badgeBorder: 'border-emerald-500/40 dark:border-emerald-400/30',
+      badgeBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300',
+      label: 'Ateşkes',
+      activeLabel: 'Kısa Nefes Seansı',
+      pausedLabel: 'Zaman Donduruldu',
     },
     LONG_BREAK: {
-      gradientId: 'gradient-long-break',
-      auraBg: 'bg-gradient-to-tr from-sky-500/40 via-blue-500/25 to-indigo-500/20',
-      track: 'stroke-sky-950/5 dark:stroke-white/5',
-      glow: 'shadow-sky-500/15 dark:shadow-sky-500/20',
-      bgBadge: 'bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-300/40 dark:border-sky-500/20',
-      label: 'Uzun Mola',
-      activeLabel: 'Yenilenme Zamanı',
+      gradientId: 'gradient-chronos-sky',
+      auraBg: 'bg-gradient-to-tr from-sky-600/35 via-indigo-600/20 to-blue-500/25',
+      track: 'stroke-sky-950/20 dark:stroke-sky-400/10',
+      glow: 'shadow-sky-500/20 dark:shadow-sky-500/25',
+      badgeBorder: 'border-sky-500/40 dark:border-sky-400/30',
+      badgeBg: 'bg-sky-500/15 text-sky-600 dark:text-sky-300',
+      label: 'Titan Uykusu',
+      activeLabel: 'Büyük Yenilenme',
+      pausedLabel: 'Zaman Donduruldu',
     },
   }[mode];
 
   const getStatusText = () => {
     if (status === 'RUNNING') return modeStyles.activeLabel;
-    if (status === 'PAUSED') return 'Duraklatıldı';
+    if (status === 'PAUSED') return modeStyles.pausedLabel;
     return modeStyles.label;
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center my-1 sm:my-3 md:my-4 select-none shrink-0">
+    <div className="relative flex flex-col items-center justify-center my-1 sm:my-3 select-none shrink-0 w-full max-w-sm sm:max-w-md mx-auto">
+      {/* Visual Mode Selector: Çarklar / Kum Saati / Bütünleşik */}
+      <div className="flex items-center gap-1 mb-2 px-2 py-1 rounded-full bg-black/40 border border-amber-500/20 backdrop-blur-md z-20 shadow-xs">
+        <button
+          type="button"
+          onClick={() => setVisualMode('combined')}
+          className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-chronos transition-all cursor-pointer ${
+            visualMode === 'combined'
+              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
+              : 'text-amber-200/70 hover:text-amber-100'
+          }`}
+          title="Bütünleşik Görünüm: Dönen Çarklar ve Kum Saati"
+        >
+          <Sparkles className="w-3 h-3" />
+          <span>Bütünleşik</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setVisualMode('gears')}
+          className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-chronos transition-all cursor-pointer ${
+            visualMode === 'gears'
+              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
+              : 'text-amber-200/70 hover:text-amber-100'
+          }`}
+          title="Kadran Görünümü: Dönen Çarklar ve Roma Rakamları"
+        >
+          <Cog className="w-3 h-3" />
+          <span>Çarklar</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setVisualMode('hourglass')}
+          className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-chronos transition-all cursor-pointer ${
+            visualMode === 'hourglass'
+              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold shadow-xs'
+              : 'text-amber-200/70 hover:text-amber-100'
+          }`}
+          title="Kum Saati Görünümü: Zamanın Kumları"
+        >
+          <Hourglass className="w-3 h-3" />
+          <span>Kum Saati</span>
+        </button>
+      </div>
+
       {/* Dynamic Ambient Breathing Aura Behind Timer */}
       <div
-        className={`absolute -inset-4 sm:-inset-10 rounded-full blur-2xl sm:blur-3xl transition-all duration-700 pointer-events-none ${
+        className={`absolute -inset-4 sm:-inset-8 rounded-full blur-2xl sm:blur-3xl transition-all duration-700 pointer-events-none ${
           status === 'RUNNING'
-            ? 'animate-pulse-glow opacity-70 dark:opacity-60 scale-105'
-            : 'opacity-25 dark:opacity-20 scale-95'
+            ? 'animate-pulse-glow opacity-80 scale-105'
+            : 'opacity-30 scale-95'
         } ${modeStyles.auraBg}`}
         aria-hidden="true"
       />
 
-      {/* Outer subtle glow wrapper with dynamic viewport constraints */}
+      {/* Outer subtle glow wrapper with dynamic constraints */}
       <div
-        className={`relative flex items-center justify-center rounded-full p-2 sm:p-4 md:p-5 transition-all duration-500 shadow-xl sm:shadow-2xl w-[min(74vw,34dvh)] h-[min(74vw,34dvh)] sm:w-[330px] sm:h-[330px] md:w-[360px] md:h-[360px] max-w-[380px] max-h-[380px] min-w-[220px] min-h-[220px] aspect-square bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl border border-white/60 dark:border-white/10 ${modeStyles.glow}`}
+        className={`relative flex items-center justify-center rounded-full p-2 sm:p-4 transition-all duration-500 shadow-2xl w-[min(82vw,36dvh)] h-[min(82vw,36dvh)] sm:w-[350px] sm:h-[350px] md:w-[380px] md:h-[380px] max-w-[400px] max-h-[400px] min-w-[240px] min-h-[240px] aspect-square bg-[#070b10]/80 backdrop-blur-2xl border-2 border-amber-500/30 ${modeStyles.glow}`}
       >
+        {/* ======================================================== */}
+        {/* ROTATING CLOCKWORK GEARS (Rendered in Gears & Combined)  */}
+        {/* ======================================================== */}
+        {(visualMode === 'gears' || visualMode === 'combined') && (
+          <ClockworkGears
+            status={status}
+            mode={mode}
+            remainingRatio={remainingRatio}
+            className="absolute inset-0 w-full h-full scale-[1.05]"
+          />
+        )}
+
+        {/* ======================================================== */}
+        {/* CIRCULAR TIMER PROGRESS RING SVG                         */}
+        {/* ======================================================== */}
         <svg
           viewBox={`0 0 ${size} ${size}`}
-          className="w-full h-full transform -rotate-90"
+          className="w-full h-full transform -rotate-90 relative z-10"
           aria-hidden="true"
         >
-          {/* Gradient definitions and glow filter */}
           <defs>
-            <linearGradient id="gradient-focus" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f43f5e" />
-              <stop offset="60%" stopColor="#fb7185" />
-              <stop offset="100%" stopColor="#fb923c" />
+            {/* Titan Gold Metallic Gradient */}
+            <linearGradient id="gradient-chronos-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fef08a" />
+              <stop offset="35%" stopColor="#f59e0b" />
+              <stop offset="75%" stopColor="#d97706" />
+              <stop offset="100%" stopColor="#10b981" />
             </linearGradient>
 
-            <linearGradient id="gradient-short-break" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#10b981" />
-              <stop offset="60%" stopColor="#34d399" />
-              <stop offset="100%" stopColor="#06b6d4" />
+            {/* Witchfire Emerald Gradient */}
+            <linearGradient id="gradient-chronos-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#6ee7b7" />
+              <stop offset="50%" stopColor="#10b981" />
+              <stop offset="100%" stopColor="#047857" />
             </linearGradient>
 
-            <linearGradient id="gradient-long-break" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#0ea5e9" />
-              <stop offset="60%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#6366f1" />
+            {/* Celestial Sky Gradient */}
+            <linearGradient id="gradient-chronos-sky" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#7dd3fc" />
+              <stop offset="50%" stopColor="#0ea5e9" />
+              <stop offset="100%" stopColor="#4338ca" />
             </linearGradient>
 
-            <filter id="timerGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
+            <filter id="timerRingGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -128,7 +203,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             </filter>
           </defs>
 
-          {/* Background Track Circle */}
+          {/* Background Track Circle with Titan Gold Inscription */}
           <circle
             cx={center}
             cy={center}
@@ -138,7 +213,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             className={`${modeStyles.track} transition-colors duration-500`}
           />
 
-          {/* Animated Progress Ring with Vibrant Gradient */}
+          {/* Animated Progress Ring */}
           <circle
             cx={center}
             cy={center}
@@ -149,7 +224,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             stroke={`url(#${modeStyles.gradientId})`}
-            filter={status === 'RUNNING' ? 'url(#timerGlow)' : undefined}
+            filter={status === 'RUNNING' ? 'url(#timerRingGlow)' : undefined}
             className="timer-ring"
           />
 
@@ -158,56 +233,101 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             <circle
               cx={dotX}
               cy={dotY}
-              r={strokeWidth / 2 - 0.5}
-              className="fill-white transition-all duration-150 drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"
+              r={strokeWidth / 2 + 1}
+              className="fill-amber-100 drop-shadow-[0_0_8px_rgba(254,240,138,0.9)]"
             />
           )}
         </svg>
 
-        {/* Central Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-6">
-          {/* Status Badge */}
+        {/* ======================================================== */}
+        {/* CENTRAL CONTENT (TIME, HOURGLASS, BADGE, ACTIVE TASK)   */}
+        {/* ======================================================== */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 sm:p-4 z-20">
+          {/* Status Badge with Chronos filigree */}
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide uppercase border mb-1 sm:mb-2 backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.bgBadge}`}
+            className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-wider uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1`}
           >
             {getStatusText()}
           </span>
 
-          {/* Large Countdown Display */}
-          <span
-            className="text-[2.75rem] leading-none sm:text-6xl md:text-7xl font-mono font-light tracking-tighter text-zinc-900 dark:text-zinc-50 tabular-nums transition-colors drop-shadow-sm my-0.5"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {formatTime(remainingSeconds)}
-          </span>
+          {/* If Hourglass view is selected, render large Hourglass with digital time below */}
+          {visualMode === 'hourglass' ? (
+            <div className="flex flex-col items-center justify-center">
+              <ChronosHourglass
+                remainingRatio={remainingRatio}
+                status={status}
+                mode={mode}
+                size={110}
+                className="my-1 sm:my-1.5"
+              />
+              <span
+                className="text-2xl sm:text-3xl font-chronos font-bold tracking-tight text-amber-100 tabular-nums drop-shadow-[0_2px_8px_rgba(245,158,11,0.5)]"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {formatTime(remainingSeconds)}
+              </span>
+            </div>
+          ) : visualMode === 'combined' ? (
+            /* Combined Mode: Compact Hourglass and Bold Countdown in harmonious layout */
+            <div className="flex flex-col items-center justify-center">
+              <ChronosHourglass
+                remainingRatio={remainingRatio}
+                status={status}
+                mode={mode}
+                size={68}
+                className="opacity-95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] -mb-1"
+              />
+              <span
+                className="text-3xl sm:text-4xl md:text-5xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)] tabular-nums my-0.5"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {formatTime(remainingSeconds)}
+              </span>
+            </div>
+          ) : (
+            /* Gears / Astrolabe Mode: Massive Roman-styled Countdown Display */
+            <div className="flex flex-col items-center justify-center my-2 sm:my-3">
+              <span
+                className="text-4xl sm:text-5xl md:text-6xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)] tabular-nums"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {formatTime(remainingSeconds)}
+              </span>
+              <span className="text-[10px] font-chronos tracking-widest text-amber-400/60 uppercase mt-0.5">
+                • CHRONOS •
+              </span>
+            </div>
+          )}
 
           {/* Active Task Indicator inside circle */}
-          <div className="mt-3 max-w-[220px] truncate">
+          <div className="mt-1.5 max-w-[210px] truncate">
             {activeTask ? (
               <button
                 type="button"
                 onClick={onOpenTasks}
                 title={`Aktif Görev: ${activeTask.title} (Görevleri açmak için tıkla)`}
-                className="flex items-center justify-center gap-1.5 text-xs text-zinc-700 dark:text-zinc-200 bg-white/80 dark:bg-zinc-800/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-zinc-200/80 dark:border-white/10 shadow-xs hover:scale-102 hover:border-zinc-300 dark:hover:border-zinc-500 transition-all cursor-pointer truncate max-w-full"
+                className="flex items-center justify-center gap-1.5 text-[11px] text-amber-200 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/30 shadow-xs hover:border-amber-400 transition-all cursor-pointer truncate max-w-full font-chronos"
               >
                 {activeTask.isCompleted ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
                 ) : (
-                  <Target className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                  <Target className="w-3 h-3 text-amber-400 shrink-0" />
                 )}
                 <span className="truncate">{activeTask.title}</span>
-                <span className="text-[10px] opacity-70 shrink-0 font-mono">
-                  ({activeTask.completedPomodoros}/{activeTask.estimatedPomodoros} 🍅)
+                <span className="text-[9px] opacity-80 shrink-0 font-mono text-amber-300">
+                  ({activeTask.completedPomodoros}/{activeTask.estimatedPomodoros} ⏳)
                 </span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={onOpenTasks}
-                className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors underline underline-offset-4 decoration-dotted cursor-pointer"
+                className="text-[11px] font-chronos text-amber-300/60 hover:text-amber-200 transition-colors underline underline-offset-4 decoration-amber-500/40 cursor-pointer"
               >
-                + Odaklanılacak görev seç
+                + Odak görevi belirle
               </button>
             )}
           </div>

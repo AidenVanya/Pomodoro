@@ -1,7 +1,7 @@
 import React from 'react';
 import type { PomodoroStats } from '../types/pomodoro';
 import { formatDurationHuman, getTodayKey } from '../utils/formatters';
-import { X, Flame, Clock, CheckCircle, Trophy, BarChart2 } from 'lucide-react';
+import { X, Flame, Clock, CheckCircle, Trophy, Hourglass } from 'lucide-react';
 
 interface StatsModalProps {
   isOpen: boolean;
@@ -38,19 +38,19 @@ export const StatsModal: React.FC<StatsModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="stats-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col max-h-[85dvh] m-auto"
+        className="w-full max-w-lg bg-[#0a0e14] text-amber-100 rounded-3xl border border-amber-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[85dvh] m-auto font-chronos"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-amber-500/20 bg-black/40">
           <div className="flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-rose-500" />
-            <h2 id="stats-modal-title" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              Odaklanma İstatistikleri
+            <Hourglass className="w-5 h-5 text-amber-400" />
+            <h2 id="stats-modal-title" className="text-lg font-bold text-amber-200">
+              Zamanın Kayıtları (İstatistik)
             </h2>
           </div>
 
@@ -58,7 +58,7 @@ export const StatsModal: React.FC<StatsModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Kapat"
-            className="p-1.5 rounded-xl text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-amber-400/60 hover:text-amber-200 hover:bg-amber-500/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -68,54 +68,54 @@ export const StatsModal: React.FC<StatsModalProps> = ({
         <div className="p-6 overflow-y-auto space-y-6">
           {/* Metric cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 flex flex-col">
-              <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs mb-1">
-                <Clock className="w-3.5 h-3.5 text-rose-500" />
+            <div className="p-3.5 rounded-2xl bg-black/40 border border-amber-500/20 flex flex-col">
+              <div className="flex items-center gap-1.5 text-amber-400/70 text-xs mb-1">
+                <Clock className="w-3.5 h-3.5 text-amber-400" />
                 <span>Toplam Süre</span>
               </div>
-              <span className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-auto">
+              <span className="text-base font-bold text-amber-100 mt-auto">
                 {formatDurationHuman(stats.totalFocusMinutes)}
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 flex flex-col">
-              <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs mb-1">
-                <Trophy className="w-3.5 h-3.5 text-amber-500" />
+            <div className="p-3.5 rounded-2xl bg-black/40 border border-amber-500/20 flex flex-col">
+              <div className="flex items-center gap-1.5 text-amber-400/70 text-xs mb-1">
+                <Trophy className="w-3.5 h-3.5 text-amber-400" />
                 <span>Seanslar</span>
               </div>
-              <span className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-auto">
-                {stats.totalSessions} <span className="text-xs font-normal text-zinc-500">adet</span>
+              <span className="text-base font-bold text-amber-100 mt-auto">
+                {stats.totalSessions} <span className="text-xs font-normal text-amber-400/60">adet</span>
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 flex flex-col">
-              <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs mb-1">
-                <Flame className="w-3.5 h-3.5 text-orange-500" />
+            <div className="p-3.5 rounded-2xl bg-black/40 border border-amber-500/20 flex flex-col">
+              <div className="flex items-center gap-1.5 text-amber-400/70 text-xs mb-1">
+                <Flame className="w-3.5 h-3.5 text-orange-400" />
                 <span>Seri</span>
               </div>
-              <span className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-auto">
-                {stats.streakDays} <span className="text-xs font-normal text-zinc-500">gün</span>
+              <span className="text-base font-bold text-amber-100 mt-auto">
+                {stats.streakDays} <span className="text-xs font-normal text-amber-400/60">gün</span>
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 flex flex-col">
-              <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs mb-1">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+            <div className="p-3.5 rounded-2xl bg-black/40 border border-amber-500/20 flex flex-col">
+              <div className="flex items-center gap-1.5 text-emerald-400/80 text-xs mb-1">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Bugün</span>
               </div>
-              <span className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-auto">
-                {todayData.sessions} <span className="text-xs font-normal text-zinc-500">seans</span>
+              <span className="text-base font-bold text-amber-100 mt-auto">
+                {todayData.sessions} <span className="text-xs font-normal text-amber-400/60">seans</span>
               </span>
             </div>
           </div>
 
           {/* Activity Chart */}
-          <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="pt-4 border-t border-amber-500/20">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                Son 7 Günlük Aktivite
+              <span className="text-xs font-medium text-amber-400/80">
+                Son 7 Günlük Zaman Akışı
               </span>
-              <span className="text-xs text-zinc-400 font-mono">
+              <span className="text-xs text-amber-300/60 font-mono">
                 Bugün: {todayData.minutes} dk
               </span>
             </div>
@@ -126,26 +126,26 @@ export const StatsModal: React.FC<StatsModalProps> = ({
 
                 return (
                   <div key={day.key} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                    <span className="text-[10px] text-zinc-400 font-mono">
+                    <span className="text-[10px] text-amber-300/70 font-mono">
                       {day.sessionCount > 0 ? day.sessionCount : ''}
                     </span>
                     <div
-                      className="w-full max-w-[32px] rounded-t-lg transition-all duration-500"
+                      className="w-full max-w-[32px] rounded-t-lg transition-all duration-500 border-t border-x border-amber-400/40"
                       style={{
                         height: `${heightPercent}%`,
-                        backgroundColor: day.isToday
-                          ? '#f43f5e'
+                        background: day.isToday
+                          ? 'linear-gradient(to top, #d97706, #fbbf24)'
                           : day.sessionCount > 0
-                          ? '#fb7185'
-                          : 'rgba(156, 163, 175, 0.2)',
+                          ? 'linear-gradient(to top, #78350f, #d97706)'
+                          : 'rgba(217, 119, 6, 0.1)',
                       }}
                       title={`${day.key}: ${day.sessionCount} seans`}
                     />
                     <span
                       className={`text-[11px] ${
                         day.isToday
-                          ? 'font-bold text-rose-500'
-                          : 'text-zinc-500 dark:text-zinc-400'
+                          ? 'font-bold text-amber-300'
+                          : 'text-amber-400/60'
                       }`}
                     >
                       {day.dayName}
@@ -158,11 +158,11 @@ export const StatsModal: React.FC<StatsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex justify-end">
+        <div className="p-4 border-t border-amber-500/20 bg-black/40 flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 text-xs font-medium transition-colors cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-amber-200 text-xs font-semibold transition-colors cursor-pointer"
           >
             Kapat
           </button>

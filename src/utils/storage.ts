@@ -16,11 +16,12 @@ export const DEFAULT_SETTINGS: PomodoroSettings = {
   autoStartPomodoros: false,
   soundEnabled: true,
   soundVolume: 80,
-  soundTheme: 'zen-bell',
+  soundTheme: 'chronos-bell',
   notificationsEnabled: false,
   ambientSound: 'none',
   ambientVolume: 40,
-  theme: 'system',
+  theme: 'chronos',
+  timerVisualMode: 'combined',
 };
 
 export const DEFAULT_STATS: PomodoroStats = {

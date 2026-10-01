@@ -71,6 +71,39 @@ export function playAlertSound(theme: SoundTheme, volumePercent: number = 70): v
     const now = ctx.currentTime;
 
     switch (theme) {
+      case 'chronos-bell': {
+        // Deep ancient Titan bronze clock tower bell / temple strike
+        const baseFreq = 164.81; // E3
+        const partials = [
+          { f: 82.4, g: 0.8, d: 4.8 }, // Sub-bass hum
+          { f: baseFreq, g: 0.9, d: 4.5 }, // Strike note
+          { f: baseFreq * 1.5, g: 0.6, d: 4.0 }, // Fifth
+          { f: baseFreq * 2.0, g: 0.45, d: 3.5 }, // Octave
+          { f: baseFreq * 2.76, g: 0.35, d: 3.0 }, // Minor third upper bell harmonic
+          { f: baseFreq * 4.15, g: 0.2, d: 2.2 }, // Shimmer
+          { f: baseFreq * 5.4, g: 0.12, d: 1.6 }, // High metallic overtone
+        ];
+
+        partials.forEach(({ f, g, d }) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(g * 0.8, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + d);
+
+          osc.connect(gain);
+          gain.connect(masterGain);
+
+          osc.start(now);
+          osc.stop(now + d);
+        });
+        break;
+      }
+
       case 'zen-bell': {
         // Japanese Temple Gong / Zen Bell harmonic simulation
         const frequencies = [440, 882, 1324, 1768];
@@ -195,16 +228,74 @@ export function playAlertSound(theme: SoundTheme, volumePercent: number = 70): v
 // ----------------------------------------------------
 // High Quality Real Ambient Audio Player (Seamless Loop & Robust Switching)
 // ----------------------------------------------------
-const AUDIO_SOURCES: Record<Exclude<AmbientSoundType, 'none'>, string> = {
+// High Quality Real Ambient Audio Player (Seamless Loop & Robust Switching)
+// ----------------------------------------------------
+const AUDIO_SOURCES: Record<Exclude<AmbientSoundType, 'none' | 'clockwork'>, string> = {
   rain: '/sounds/rain.mp3',
   cafe: '/sounds/cafe.mp3',
   'white-noise': '/sounds/stream.mp3',
 };
 
-const audioInstances: Partial<Record<Exclude<AmbientSoundType, 'none'>, HTMLAudioElement>> = {};
+const audioInstances: Partial<Record<Exclude<AmbientSoundType, 'none' | 'clockwork'>, HTMLAudioElement>> = {};
 const fadeTimers: Partial<Record<string, number>> = {};
 
 let currentPlayingType: AmbientSoundType = 'none';
+let clockworkTimer: number | null = null;
+let clockworkStep = 0;
+let clockworkVolume = 0.4;
+
+function tickClockwork(): void {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+    const isTick = clockworkStep % 2 === 0;
+    clockworkStep++;
+
+    // Crisp mechanical tooth escapement click
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(isTick ? 1200 : 880, now);
+    osc.frequency.exponentialRampToValueAtTime(isTick ? 320 : 240, now + 0.025);
+
+    gain.gain.setValueAtTime(clockworkVolume * 0.16, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.035);
+
+    // Warm metallic gear resonance
+    const ping = ctx.createOscillator();
+    const pingGain = ctx.createGain();
+    ping.type = 'sine';
+    ping.frequency.setValueAtTime(isTick ? 2200 : 1760, now);
+    pingGain.gain.setValueAtTime(clockworkVolume * 0.03, now);
+    pingGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+
+    ping.connect(pingGain);
+    pingGain.connect(ctx.destination);
+    ping.start(now);
+    ping.stop(now + 0.06);
+  } catch {
+    // ignore
+  }
+}
+
+function startClockworkAudio(vol: number): void {
+  stopClockworkAudio();
+  clockworkVolume = vol;
+  tickClockwork();
+  clockworkTimer = window.setInterval(tickClockwork, 1000);
+}
+
+function stopClockworkAudio(): void {
+  if (clockworkTimer !== null) {
+    clearInterval(clockworkTimer);
+    clockworkTimer = null;
+  }
+}
 
 function clearAudioFade(key: string): void {
   const timer = fadeTimers[key];
@@ -230,7 +321,10 @@ function stopAndResetAudio(key: string, audio: HTMLAudioElement): void {
  * Guarantees that no two ambient sounds can ever overlap or play at the same time.
  */
 function stopAllAmbientAudiosExcept(keepType?: AmbientSoundType): void {
-  (Object.keys(AUDIO_SOURCES) as Exclude<AmbientSoundType, 'none'>[]).forEach((type) => {
+  if (keepType !== 'clockwork') {
+    stopClockworkAudio();
+  }
+  (Object.keys(AUDIO_SOURCES) as Exclude<AmbientSoundType, 'none' | 'clockwork'>[]).forEach((type) => {
     if (type !== keepType) {
       clearAudioFade(type);
       const audio = audioInstances[type];
@@ -283,9 +377,18 @@ export function startAmbientSound(type: AmbientSoundType, volumePercent: number)
     return;
   }
 
+  if (type === 'clockwork') {
+    currentPlayingType = 'clockwork';
+    stopAllAmbientAudiosExcept('clockwork');
+    startClockworkAudio(targetVolume);
+    return;
+  } else {
+    stopClockworkAudio();
+  }
+
   // If already playing this exact sound, just update volume smoothly
   if (currentPlayingType === type) {
-    const audio = audioInstances[type];
+    const audio = audioInstances[type as Exclude<AmbientSoundType, 'none' | 'clockwork'>];
     if (audio) {
       if (audio.paused) {
         audio.play().catch(() => {});
@@ -301,16 +404,16 @@ export function startAmbientSound(type: AmbientSoundType, volumePercent: number)
   // 2. STOP and reset all other audio instances immediately - guarantees NO overlapping sounds
   stopAllAmbientAudiosExcept(type);
 
-  const src = AUDIO_SOURCES[type];
+  const src = AUDIO_SOURCES[type as Exclude<AmbientSoundType, 'none' | 'clockwork'>];
   if (!src) return;
 
   // 3. Retrieve or initialize the audio instance
-  let audio = audioInstances[type];
+  let audio = audioInstances[type as Exclude<AmbientSoundType, 'none' | 'clockwork'>];
   if (!audio) {
     audio = new Audio(src);
     audio.loop = true;
     audio.preload = 'auto';
-    audioInstances[type] = audio;
+    audioInstances[type as Exclude<AmbientSoundType, 'none' | 'clockwork'>] = audio;
   }
 
   // Prepare audio for smooth fade-in
@@ -340,8 +443,12 @@ export function startAmbientSound(type: AmbientSoundType, volumePercent: number)
 
 export function setAmbientVolume(volumePercent: number): void {
   const targetVolume = Math.max(0, Math.min(1, volumePercent / 100));
+  if (currentPlayingType === 'clockwork') {
+    clockworkVolume = targetVolume;
+    return;
+  }
   if (currentPlayingType !== 'none') {
-    const audio = audioInstances[currentPlayingType];
+    const audio = audioInstances[currentPlayingType as Exclude<AmbientSoundType, 'none' | 'clockwork'>];
     if (audio) {
       fadeAudioVolume(currentPlayingType, audio, audio.volume, targetVolume, 60);
     }
@@ -352,10 +459,12 @@ export function stopAmbientSound(): void {
   const prevType = currentPlayingType;
   currentPlayingType = 'none';
 
+  stopClockworkAudio();
+
   // Immediately stop all other audios
   stopAllAmbientAudiosExcept(prevType !== 'none' ? prevType : undefined);
 
-  if (prevType !== 'none') {
+  if (prevType !== 'none' && prevType !== 'clockwork') {
     const audio = audioInstances[prevType];
     if (audio && !audio.paused && audio.volume > 0.01) {
       fadeAudioVolume(prevType, audio, audio.volume, 0, 150, () => {

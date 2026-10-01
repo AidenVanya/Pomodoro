@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import type { TimerMode } from '../types/pomodoro';
-import { Sparkles, Coffee, Armchair } from 'lucide-react';
+import { Sparkles, Shield, Moon } from 'lucide-react';
 
 interface ModeSelectorProps {
   currentMode: TimerMode;
@@ -15,21 +15,24 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
   round,
   maxRounds,
 }) => {
-  const modes: { id: TimerMode; label: string; icon: React.ReactNode }[] = [
+  const modes: { id: TimerMode; label: string; subLabel: string; icon: React.ReactNode }[] = [
     {
       id: 'FOCUS',
-      label: 'Odaklan',
-      icon: <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
+      label: 'Zaman Bükümü',
+      subLabel: 'Odak',
+      icon: <Sparkles className="w-3.5 h-3.5" />,
     },
     {
       id: 'SHORT_BREAK',
-      label: 'Kısa Mola',
-      icon: <Coffee className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
+      label: 'Ateşkes',
+      subLabel: 'Kısa Mola',
+      icon: <Shield className="w-3.5 h-3.5" />,
     },
     {
       id: 'LONG_BREAK',
-      label: 'Uzun Mola',
-      icon: <Armchair className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
+      label: 'Titan Uykusu',
+      subLabel: 'Uzun Mola',
+      icon: <Moon className="w-3.5 h-3.5" />,
     },
   ];
 
@@ -63,9 +66,9 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
   }, [currentMode]);
 
   const activeModeBg = {
-    FOCUS: 'bg-gradient-to-r from-rose-500 to-rose-600 shadow-md shadow-rose-500/30 text-white',
-    SHORT_BREAK: 'bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-md shadow-emerald-500/30 text-white',
-    LONG_BREAK: 'bg-gradient-to-r from-sky-500 to-indigo-600 shadow-md shadow-sky-500/30 text-white',
+    FOCUS: 'bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 shadow-md shadow-amber-500/30 text-white',
+    SHORT_BREAK: 'bg-gradient-to-r from-emerald-600 to-teal-500 shadow-md shadow-emerald-500/30 text-white',
+    LONG_BREAK: 'bg-gradient-to-r from-sky-600 to-indigo-600 shadow-md shadow-sky-500/30 text-white',
   }[currentMode];
 
   return (
@@ -74,7 +77,7 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
       <div
         role="tablist"
         aria-label="Pomodoro Zamanlayıcı Modları"
-        className="relative inline-flex p-1 rounded-2xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border border-zinc-200/80 dark:border-white/10 shadow-xs sm:shadow-sm"
+        className="relative inline-flex p-1 rounded-2xl bg-black/40 backdrop-blur-xl border border-amber-500/30 shadow-xs sm:shadow-sm"
       >
         {/* Animated Sliding Pill */}
         <div
@@ -86,51 +89,52 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
           }}
         />
 
-        {modes.map((mode) => {
-          const isActive = currentMode === mode.id;
+        {modes.map((m) => {
+          const isActive = currentMode === m.id;
 
           return (
             <button
-              key={mode.id}
+              key={m.id}
               ref={(el) => {
-                buttonRefs.current[mode.id] = el;
+                buttonRefs.current[m.id] = el;
               }}
               role="tab"
               aria-selected={isActive}
-              onClick={() => onSelectMode(mode.id)}
-              className={`relative z-10 flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-offset-zinc-900 cursor-pointer ${
+              onClick={() => onSelectMode(m.id)}
+              className={`relative z-10 flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-chronos font-medium rounded-xl transition-colors duration-200 focus:outline-none cursor-pointer ${
                 isActive
-                  ? 'text-white font-semibold'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
+                  ? 'text-white font-bold'
+                  : 'text-amber-200/70 hover:text-amber-100'
               }`}
             >
-              <span className="shrink-0">{mode.icon}</span>
-              <span>{mode.label}</span>
+              <span className="shrink-0">{m.icon}</span>
+              <span className="hidden sm:inline">{m.label}</span>
+              <span className="sm:hidden">{m.subLabel}</span>
             </button>
           );
         })}
       </div>
 
       {/* Rounds indicator */}
-      <div className="flex items-center gap-2 sm:gap-2.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-        <span className="text-[11px] sm:text-xs">Döngü {round} / {maxRounds}</span>
+      <div className="flex items-center gap-2 sm:gap-2.5 text-xs font-chronos font-medium text-amber-300/80">
+        <span className="text-[11px] sm:text-xs tracking-wider">DÖNGÜ {round} / {maxRounds}</span>
         <div className="flex items-center gap-1.5 ml-0.5" aria-label={`Döngü ${round} / ${maxRounds}`}>
           {Array.from({ length: maxRounds }).map((_, index) => {
             const isCompleted = index + 1 < round;
             const isCurrent = index + 1 === round;
 
-            let dotColor = 'bg-zinc-300 dark:bg-zinc-700/80';
+            let dotColor = 'bg-amber-950/60 border border-amber-500/30';
             if (isCompleted || isCurrent) {
-              if (currentMode === 'FOCUS') dotColor = 'bg-rose-500 shadow-xs shadow-rose-500/50';
-              else if (currentMode === 'SHORT_BREAK') dotColor = 'bg-emerald-500 shadow-xs shadow-emerald-500/50';
-              else dotColor = 'bg-sky-500 shadow-xs shadow-sky-500/50';
+              if (currentMode === 'FOCUS') dotColor = 'bg-gradient-to-r from-amber-400 to-yellow-500 shadow-xs shadow-amber-500/80 border-amber-300';
+              else if (currentMode === 'SHORT_BREAK') dotColor = 'bg-gradient-to-r from-emerald-400 to-teal-400 shadow-xs shadow-emerald-500/80 border-emerald-300';
+              else dotColor = 'bg-gradient-to-r from-sky-400 to-indigo-400 shadow-xs shadow-sky-500/80 border-sky-300';
             }
 
             return (
               <span
                 key={index}
                 className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 ${dotColor} ${
-                  isCurrent ? 'ring-2 ring-offset-1 ring-zinc-400 dark:ring-zinc-500 dark:ring-offset-zinc-900 scale-125' : ''
+                  isCurrent ? 'ring-2 ring-offset-1 ring-amber-400 ring-offset-black scale-125' : ''
                 }`}
               />
             );

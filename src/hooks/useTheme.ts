@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { AppTheme } from '../types/pomodoro';
 
-export function useTheme(initialTheme: AppTheme = 'system') {
+export function useTheme(initialTheme: AppTheme = 'chronos') {
   const [theme, setTheme] = useState<AppTheme>(initialTheme);
   const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    if (initialTheme === 'dark' || initialTheme === 'sunset' || initialTheme === 'forest') return true;
+    if (typeof window === 'undefined') return true;
+    if (initialTheme === 'chronos' || initialTheme === 'dark' || initialTheme === 'sunset' || initialTheme === 'forest') return true;
     if (initialTheme === 'light') return false;
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
@@ -14,7 +14,7 @@ export function useTheme(initialTheme: AppTheme = 'system') {
     const root = document.documentElement;
 
     const computeIsDark = () => {
-      if (theme === 'dark' || theme === 'sunset' || theme === 'forest') return true;
+      if (theme === 'chronos' || theme === 'dark' || theme === 'sunset' || theme === 'forest') return true;
       if (theme === 'light') return false;
       return window.matchMedia('(prefers-color-scheme: dark)').matches;
     };
@@ -52,8 +52,8 @@ export function useTheme(initialTheme: AppTheme = 'system') {
   }, [theme]);
 
   const toggleTheme = (): AppTheme => {
-    // If on a dark-toned theme, switch to light; if on light, switch to dark
-    const nextTheme: AppTheme = isDark ? 'light' : 'dark';
+    // If on a dark-toned theme, switch to light; if on light, switch to chronos
+    const nextTheme: AppTheme = isDark ? 'light' : 'chronos';
     setTheme(nextTheme);
     return nextTheme;
   };
