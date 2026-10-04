@@ -14,7 +14,7 @@ import { PullToRefreshIndicator } from './components/PullToRefreshIndicator';
 import { SplashScreen } from './components/SplashScreen';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { usePwaInstall } from './hooks/usePwaInstall';
-import { startAmbientSound, setAmbientVolume, stopAmbientSound } from './utils/audio';
+import { startAmbientSound, setAmbientVolume, stopAmbientSound, stopIntroMusic } from './utils/audio';
 import { Share, X as CloseIcon, Download } from 'lucide-react';
 
 export function App() {
@@ -56,10 +56,16 @@ export function App() {
     updateSettings({ theme: nextTheme });
   };
 
+  // Smoothly fade out intro music when starting timer
+  const handleToggleTimer = () => {
+    stopIntroMusic(300);
+    toggle();
+  };
+
   // Keyboard shortcuts (Space: Toggle, R: Reset, S: Skip) - disabled when any modal is open
   const isAnyModalOpen = isSettingsOpen || isTaskModalOpen || isStatsModalOpen || showIOSPrompt;
   useKeyboardShortcuts({
-    onToggle: toggle,
+    onToggle: handleToggleTimer,
     onReset: reset,
     onSkip: skip,
     isEnabled: !isAnyModalOpen,
@@ -121,9 +127,13 @@ export function App() {
 
   return (
     <div className={`min-h-screen min-h-dvh w-full flex flex-col justify-between transition-colors duration-500 relative select-none touch-pan-y ${themeBaseClass}`}>
-      {/* Cinematic Splash Screen with Official Chronos Logo */}
+      {/* Cinematic Splash Screen with Official Chronos Logo & Intro Music */}
       {showSplash && (
-        <SplashScreen onFinish={() => setShowSplash(false)} />
+        <SplashScreen
+          onFinish={() => setShowSplash(false)}
+          soundEnabled={settings.soundEnabled}
+          soundVolume={settings.soundVolume}
+        />
       )}
 
       {/* Mobile Pull-to-Refresh Indicator */}
@@ -185,7 +195,7 @@ export function App() {
         <TimerControls
           status={status}
           mode={mode}
-          onToggle={toggle}
+          onToggle={handleToggleTimer}
           onReset={reset}
           onSkip={skip}
         />

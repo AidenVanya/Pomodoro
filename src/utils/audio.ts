@@ -475,3 +475,56 @@ export function stopAmbientSound(): void {
     }
   }
 }
+
+// ----------------------------------------------------
+// Intro / Splash Screen Cinematic Music
+// ----------------------------------------------------
+let introAudioInstance: HTMLAudioElement | null = null;
+let introFadeTimer: number | null = null;
+
+export function playIntroMusic(volumePercent: number = 75): Promise<void> {
+  if (introFadeTimer !== null) {
+    clearInterval(introFadeTimer);
+    introFadeTimer = null;
+  }
+  if (!introAudioInstance) {
+    introAudioInstance = new Audio('/sounds/chronos-intro.mp3');
+    introAudioInstance.preload = 'auto';
+  }
+  introAudioInstance.volume = Math.max(0, Math.min(1, volumePercent / 100));
+  introAudioInstance.currentTime = 0;
+  return introAudioInstance.play();
+}
+
+export function stopIntroMusic(fadeDurationMs: number = 600): void {
+  if (!introAudioInstance) return;
+  const audio = introAudioInstance;
+  if (audio.paused) return;
+
+  if (introFadeTimer !== null) {
+    clearInterval(introFadeTimer);
+  }
+
+  const startVol = audio.volume;
+  const steps = 12;
+  const stepTime = Math.max(20, fadeDurationMs / steps);
+  let curStep = 0;
+
+  introFadeTimer = window.setInterval(() => {
+    curStep++;
+    const nextVol = Math.max(0, startVol * (1 - curStep / steps));
+    audio.volume = nextVol;
+    if (curStep >= steps || nextVol <= 0.01) {
+      if (introFadeTimer !== null) {
+        clearInterval(introFadeTimer);
+        introFadeTimer = null;
+      }
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }, stepTime);
+}
+
+export function isIntroMusicPlaying(): boolean {
+  return !!introAudioInstance && !introAudioInstance.paused;
+}

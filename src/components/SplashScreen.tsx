@@ -1,19 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { playIntroMusic, stopIntroMusic } from '../utils/audio';
 
 interface SplashScreenProps {
   onFinish?: () => void;
   minDurationMs?: number;
+  soundEnabled?: boolean;
+  soundVolume?: number;
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({
   onFinish,
-  minDurationMs = 1800,
+  minDurationMs = 2600,
+  soundEnabled = true,
+  soundVolume = 80,
 }) => {
   const [isFading, setIsFading] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [progress, setProgress] = useState(0);
+  const audioStartedRef = useRef(false);
 
   useEffect(() => {
+    // Attempt to start intro music immediately
+    if (soundEnabled && !audioStartedRef.current) {
+      playIntroMusic(soundVolume)
+        .then(() => {
+          audioStartedRef.current = true;
+        })
+        .catch(() => {
+          // Browser autoplay restriction: will start on first touch/click
+          const handleFirstInteraction = () => {
+            if (!audioStartedRef.current) {
+              playIntroMusic(soundVolume).catch(() => {});
+              audioStartedRef.current = true;
+            }
+            window.removeEventListener('pointerdown', handleFirstInteraction);
+            window.removeEventListener('keydown', handleFirstInteraction);
+          };
+          window.addEventListener('pointerdown', handleFirstInteraction, { once: true });
+          window.addEventListener('keydown', handleFirstInteraction, { once: true });
+        });
+    }
+
     // Smooth progress bar increment
     const intervalTime = 25;
     const step = 100 / (minDurationMs / intervalTime);
@@ -45,10 +72,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
       clearTimeout(fadeTimer);
       clearTimeout(completeTimer);
     };
-  }, [minDurationMs, onFinish]);
+  }, [minDurationMs, onFinish, soundEnabled, soundVolume]);
 
   // Allow clicking anywhere to skip
   const handleSkip = () => {
+    // If audio hasn't started yet due to browser policy, this user click is the gesture
+    if (soundEnabled && !audioStartedRef.current) {
+      playIntroMusic(soundVolume).catch(() => {});
+      audioStartedRef.current = true;
+    } else {
+      stopIntroMusic(400);
+    }
+
     if (!isFading) {
       setIsFading(true);
       setTimeout(() => {

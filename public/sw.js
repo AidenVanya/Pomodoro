@@ -1,8 +1,9 @@
-const CACHE_NAME = 'chronos-pwa-v6';
+const CACHE_NAME = 'chronos-pwa-v7';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/sounds/chronos-intro.mp3'
 ];
 
 self.addEventListener('install', (event) => {
