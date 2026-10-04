@@ -175,6 +175,7 @@ export function App() {
         {/* Mode Selector */}
         <ModeSelector
           currentMode={mode}
+          status={status}
           onSelectMode={switchMode}
           round={round}
           maxRounds={settings.longBreakInterval}

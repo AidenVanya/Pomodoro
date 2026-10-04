@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import type { TimerMode } from '../types/pomodoro';
+import type { TimerMode, TimerStatus } from '../types/pomodoro';
 import { Sparkles, Shield, Moon } from 'lucide-react';
 
 interface ModeSelectorProps {
   currentMode: TimerMode;
+  status?: TimerStatus;
   onSelectMode: (mode: TimerMode) => void;
   round: number;
   maxRounds: number;
@@ -11,6 +12,7 @@ interface ModeSelectorProps {
 
 export const ModeSelector: React.FC<ModeSelectorProps> = ({
   currentMode,
+  status = 'IDLE',
   onSelectMode,
   round,
   maxRounds,
@@ -70,6 +72,36 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
     SHORT_BREAK: 'bg-gradient-to-r from-emerald-600 to-teal-500 shadow-md shadow-emerald-500/30 text-white',
     LONG_BREAK: 'bg-gradient-to-r from-sky-600 to-indigo-600 shadow-md shadow-sky-500/30 text-white',
   }[currentMode];
+
+  const modeBadgeStyles = {
+    FOCUS: {
+      badgeBorder: 'border-amber-500/40',
+      badgeBg: 'bg-amber-500/15 text-amber-300',
+      label: 'Çalışma',
+      activeLabel: 'Çalışma Zamanı',
+      pausedLabel: 'Zaman Duraklatıldı',
+    },
+    SHORT_BREAK: {
+      badgeBorder: 'border-emerald-500/40',
+      badgeBg: 'bg-emerald-500/15 text-emerald-300',
+      label: 'Kısa Mola',
+      activeLabel: 'Mola Zamanı',
+      pausedLabel: 'Zaman Duraklatıldı',
+    },
+    LONG_BREAK: {
+      badgeBorder: 'border-sky-500/40',
+      badgeBg: 'bg-sky-500/15 text-sky-300',
+      label: 'Uzun Mola',
+      activeLabel: 'Uzun Mola Zamanı',
+      pausedLabel: 'Zaman Duraklatıldı',
+    },
+  }[currentMode];
+
+  const getStatusText = () => {
+    if (status === 'RUNNING') return modeBadgeStyles.activeLabel;
+    if (status === 'PAUSED') return modeBadgeStyles.pausedLabel;
+    return modeBadgeStyles.label;
+  };
 
   return (
     <div className="flex flex-col items-center gap-2 sm:gap-2.5 shrink-0 select-none">
@@ -136,6 +168,16 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
               />
             );
           })}
+        </div>
+      </div>
+
+      {/* Mobile-only Mode Status Pill (Under DÖNGÜ indicator - Hidden on desktop) */}
+      <div className="flex sm:hidden items-center justify-center mt-0.5">
+        <div
+          className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-chronos font-bold tracking-widest uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeBadgeStyles.badgeBorder} ${modeBadgeStyles.badgeBg}`}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse opacity-90" />
+          <span>{getStatusText()}</span>
         </div>
       </div>
     </div>

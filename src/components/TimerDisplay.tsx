@@ -97,9 +97,9 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         {/* Singular, harmonious, and exquisitely proportioned       */}
         {/* ======================================================== */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 pointer-events-none select-none">
-          {/* Status Label Pill (Crown of the Relic) */}
+          {/* Status Label Pill (Crown of the Relic - Desktop Only, on Mobile placed under DÖNGÜ) */}
           <div
-            className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-widest uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1 sm:mb-1.5`}
+            className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-chronos font-bold tracking-widest uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1 sm:mb-1.5`}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse opacity-90" />
             <span>{getStatusText()}</span>
