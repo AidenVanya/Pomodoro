@@ -88,6 +88,13 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
             <stop offset="100%" stopColor="#6ee7b7" />
           </linearGradient>
 
+          {/* Deep Obsidian Altar Radial Gradient */}
+          <radialGradient id="altarRadialGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#0b121b" stopOpacity="0.95" />
+            <stop offset="65%" stopColor="#060910" stopOpacity="0.96" />
+            <stop offset="100%" stopColor="#020407" stopOpacity="0.98" />
+          </radialGradient>
+
           {/* Mechanical bevel & glow filters */}
           <filter id="gearShadow" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#000" floodOpacity="0.7" />
@@ -132,54 +139,8 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
         </g>
 
         {/* ======================================================== */}
-        {/* 2. LEFT FLANK COGWHEEL: Spinning Clockwork Gear (Image 3)*/}
-        {/* Turns counter-clockwise with teeth & spoke cutouts      */}
-        {/* ======================================================== */}
-        <g
-          className="origin-[98px_250px] animate-spin-ccw-medium"
-          style={{ transformOrigin: '98px 250px' }}
-        >
-          <path
-            d={generateGearPath(98, 250, 36, 28, 12)}
-            fill="url(#chronosBronze)"
-            stroke="#fbbf24"
-            strokeWidth="1.5"
-            strokeOpacity="0.7"
-            filter="url(#gearShadow)"
-          />
-          <circle cx="98" cy="250" r="22" fill="#090d14" stroke="#d97706" strokeWidth="1.5" />
-          <line x1="98" y1="230" x2="98" y2="270" stroke="#fbbf24" strokeWidth="1.5" strokeOpacity="0.7" />
-          <line x1="78" y1="250" x2="118" y2="250" stroke="#fbbf24" strokeWidth="1.5" strokeOpacity="0.7" />
-          <circle cx="98" cy="250" r="9" fill="url(#chronosGold)" stroke="#78350f" strokeWidth="1.5" />
-          <circle cx="98" cy="250" r="3.5" fill="#18181b" />
-        </g>
-
-        {/* ======================================================== */}
-        {/* 3. RIGHT FLANK COGWHEEL: Spinning Clockwork Gear(Image 3)*/}
-        {/* Turns clockwise with teeth & spoke cutouts              */}
-        {/* ======================================================== */}
-        <g
-          className="origin-[402px_250px] animate-spin-cw-medium"
-          style={{ transformOrigin: '402px 250px' }}
-        >
-          <path
-            d={generateGearPath(402, 250, 36, 28, 12)}
-            fill="url(#chronosBronze)"
-            stroke="#fbbf24"
-            strokeWidth="1.5"
-            strokeOpacity="0.7"
-            filter="url(#gearShadow)"
-          />
-          <circle cx="402" cy="250" r="22" fill="#090d14" stroke="#d97706" strokeWidth="1.5" />
-          <line x1="402" y1="230" x2="402" y2="270" stroke="#fbbf24" strokeWidth="1.5" strokeOpacity="0.7" />
-          <line x1="382" y1="250" x2="422" y2="250" stroke="#fbbf24" strokeWidth="1.5" strokeOpacity="0.7" />
-          <circle cx="402" cy="250" r="9" fill="url(#chronosGold)" stroke="#78350f" strokeWidth="1.5" />
-          <circle cx="402" cy="250" r="3.5" fill="#18181b" />
-        </g>
-
-        {/* ======================================================== */}
-        {/* 4. INNER ASTROLABE GEAR: Mechanical Sun Gear Ring        */}
-        {/* Meshes behind the dial, turning counter-clockwise       */}
+        {/* 2. INNER CONCENTRIC ASTROLABE GEAR: Mechanical Depth     */}
+        {/* Centered co-axially behind the altar, turns smoothly      */}
         {/* ======================================================== */}
         <g
           className="origin-[250px_250px] animate-spin-ccw"
@@ -224,7 +185,7 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
         </g>
 
         {/* ======================================================== */}
-        {/* 5. ROMAN NUMERAL DIAL: 12 Toothed Gear Plates            */}
+        {/* 3. ROMAN NUMERAL DIAL: 12 Toothed Gear Plates            */}
         {/* Each Roman numeral sits on a golden mini-gear wheel      */}
         {/* ======================================================== */}
         <g>
@@ -323,18 +284,37 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
         </g>
 
         {/* ======================================================== */}
-        {/* 6. CENTRAL OBSIDIAN ALTAR: Stage for Hourglass & Time    */}
+        {/* 4. CENTRAL OBSIDIAN ALTAR: Stage for Monolithic Relic    */}
         {/* ======================================================== */}
-        <circle
-          cx="250"
-          cy="250"
-          r="138"
-          fill="#06090e"
-          fillOpacity="0.85"
-          stroke="url(#chronosGold)"
-          strokeWidth="1.5"
-          strokeOpacity="0.5"
-        />
+        <g>
+          {/* Main Obsidian Sanctuary Disc */}
+          <circle
+            cx="250"
+            cy="250"
+            r="140"
+            fill="url(#altarRadialGrad)"
+            stroke="url(#chronosGold)"
+            strokeWidth="1.8"
+            strokeOpacity="0.75"
+            filter="url(#gearShadow)"
+          />
+          {/* Inner Celestial Hairline Ring */}
+          <circle
+            cx="250"
+            cy="250"
+            r="132"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="0.8"
+            strokeDasharray="3 5"
+            strokeOpacity="0.45"
+          />
+          {/* Four Cardinal Star Studs (12, 3, 6, 9 o'clock) */}
+          <polygon points="250,116 252,118 250,120 248,118" fill="#fef08a" opacity="0.8" />
+          <polygon points="250,380 252,382 250,384 248,382" fill="#fef08a" opacity="0.8" />
+          <polygon points="116,250 118,248 120,250 118,252" fill="#fef08a" opacity="0.8" />
+          <polygon points="380,250 382,248 384,250 382,252" fill="#fef08a" opacity="0.8" />
+        </g>
 
         {/* Elapsed Time Scythe / Pointer Arrow Hand (Fixed to progressAngle) */}
         {isRunning && (

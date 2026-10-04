@@ -191,34 +191,49 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         </svg>
 
         {/* ======================================================== */}
-        {/* CENTRAL CONTENT: The Hourglass of Chronos & Countdown     */}
-        {/* Perfectly centered with zero visual crowding             */}
+        {/* CENTRAL CONTENT: The Monolithic Relic of Chronos          */}
+        {/* Singular, harmonious, and exquisitely proportioned       */}
         {/* ======================================================== */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 pointer-events-none select-none">
-          {/* Status Label Pill (Top of Center Altar) */}
-          <span
-            className={`inline-flex items-center px-3 py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-widest uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1`}
+          {/* Status Label Pill (Crown of the Relic) */}
+          <div
+            className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[9px] sm:text-[10px] font-chronos font-bold tracking-widest uppercase border backdrop-blur-md shadow-xs transition-all duration-300 ${modeStyles.badgeBorder} ${modeStyles.badgeBg} mb-1 sm:mb-1.5`}
           >
-            {getStatusText()}
-          </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse opacity-90" />
+            <span>{getStatusText()}</span>
+          </div>
 
-          {/* Unified Chronos Hourglass */}
-          <ChronosHourglass
-            remainingRatio={remainingRatio}
-            status={status}
-            mode={mode}
-            size={74}
-            className="opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] my-0.5"
-          />
+          {/* Unified Relic: Slender Hourglass + Integrated Pedestal Time */}
+          <div className="flex flex-col items-center justify-center">
+            {/* The Hourglass of Chronos */}
+            <ChronosHourglass
+              remainingRatio={remainingRatio}
+              status={status}
+              mode={mode}
+              size={56}
+              className="opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] transition-transform duration-300"
+            />
 
-          {/* Bold, Legible Digital Countdown */}
-          <span
-            className="text-3xl sm:text-4xl md:text-5xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)] tabular-nums leading-tight mt-0.5"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {formatTime(remainingSeconds)}
-          </span>
+            {/* Sculpted Pedestal: Time Display & Sacred Inscription */}
+            <div className="flex flex-col items-center justify-center -mt-0.5 sm:mt-0">
+              <span
+                className="text-2xl sm:text-3xl md:text-4xl font-chronos font-bold tracking-tight text-amber-50 drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)] tabular-nums leading-none"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {formatTime(remainingSeconds)}
+              </span>
+
+              {/* Delicate Titan Emblem Divider */}
+              <div className="flex items-center gap-1.5 opacity-60 mt-1">
+                <span className="w-4 sm:w-6 h-[1px] bg-gradient-to-r from-transparent to-amber-400" />
+                <span className="text-[7.5px] sm:text-[8.5px] font-chronos tracking-[0.25em] text-amber-300 uppercase select-none">
+                  ✦ CHRONOS ✦
+                </span>
+                <span className="w-4 sm:w-6 h-[1px] bg-gradient-to-l from-transparent to-amber-400" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

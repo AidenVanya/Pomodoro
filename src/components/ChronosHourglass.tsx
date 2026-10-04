@@ -40,6 +40,13 @@ export const ChronosHourglass: React.FC<ChronosHourglassProps> = ({
     },
   }[mode];
 
+  // Jewel colors for frame architectural gems
+  const jewelColors = {
+    FOCUS: { base: '#059669', light: '#6ee7b7', stroke: '#fbbf24' },
+    SHORT_BREAK: { base: '#059669', light: '#6ee7b7', stroke: '#34d399' },
+    LONG_BREAK: { base: '#0284c7', light: '#7dd3fc', stroke: '#38bdf8' },
+  }[mode];
+
   // Upper sand level calculation (clamped between 0 and 1)
   const topFraction = Math.max(0, Math.min(1, remainingRatio));
   const bottomFraction = 1 - topFraction;
@@ -223,17 +230,17 @@ export const ChronosHourglass: React.FC<ChronosHourglassProps> = ({
         {/* ORNATE GOLDEN TITAN ARCHITECTURE / PILLARS & PEDESTALS   */}
         {/* ======================================================== */}
 
-        {/* Left Ornate Side Pillar with Emerald Rhombus Gem */}
+        {/* Left Ornate Side Pillar with Rhombus Gem */}
         <rect x="22" y="32" width="8" height="156" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
-        <polygon points="26,102 32,110 26,118 20,110" fill="#059669" stroke="#fbbf24" strokeWidth="1" />
-        <polygon points="26,105 29,110 26,115 23,110" fill="#6ee7b7" />
+        <polygon points="26,102 32,110 26,118 20,110" fill={jewelColors.base} stroke={jewelColors.stroke} strokeWidth="1" />
+        <polygon points="26,105 29,110 26,115 23,110" fill={jewelColors.light} />
 
-        {/* Right Ornate Side Pillar with Emerald Rhombus Gem */}
+        {/* Right Ornate Side Pillar with Rhombus Gem */}
         <rect x="130" y="32" width="8" height="156" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
-        <polygon points="134,102 140,110 134,118 128,110" fill="#059669" stroke="#fbbf24" strokeWidth="1" />
-        <polygon points="134,105 137,110 134,115 131,110" fill="#6ee7b7" />
+        <polygon points="134,102 140,110 134,118 128,110" fill={jewelColors.base} stroke={jewelColors.stroke} strokeWidth="1" />
+        <polygon points="134,105 137,110 134,115 131,110" fill={jewelColors.light} />
 
-        {/* Top Pedestal Base with Scythe Arch & Emerald Jewel (Image 3) */}
+        {/* Top Pedestal Base with Scythe Arch & Mode Jewel (Image 3) */}
         <g>
           {/* Top Plinth */}
           <rect x="14" y="20" width="132" height="10" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1.5" />
@@ -245,18 +252,18 @@ export const ChronosHourglass: React.FC<ChronosHourglassProps> = ({
             stroke="#78350f"
             strokeWidth="1.2"
           />
-          {/* Center Top Emerald Jewel */}
-          <polygon points="80,12 87,21 80,30 73,21" fill="#059669" stroke="#fbbf24" strokeWidth="1.2" />
-          <polygon points="80,15 84,21 80,27 76,21" fill="#6ee7b7" />
+          {/* Center Top Jewel */}
+          <polygon points="80,12 87,21 80,30 73,21" fill={jewelColors.base} stroke={jewelColors.stroke} strokeWidth="1.2" />
+          <polygon points="80,15 84,21 80,27 76,21" fill={jewelColors.light} />
         </g>
 
-        {/* Bottom Pedestal Base with Emerald Jewel */}
+        {/* Bottom Pedestal Base with Mode Jewel */}
         <g>
           <rect x="22" y="182" width="116" height="8" rx="2" fill="#090d14" stroke="url(#frameGold)" strokeWidth="1.5" />
           <rect x="14" y="190" width="132" height="10" rx="3" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1.5" />
-          {/* Center Bottom Emerald Jewel */}
-          <polygon points="80,182 87,191 80,200 73,191" fill="#059669" stroke="#fbbf24" strokeWidth="1.2" />
-          <polygon points="80,185 84,191 80,197 76,191" fill="#6ee7b7" />
+          {/* Center Bottom Jewel */}
+          <polygon points="80,182 87,191 80,200 73,191" fill={jewelColors.base} stroke={jewelColors.stroke} strokeWidth="1.2" />
+          <polygon points="80,185 84,191 80,197 76,191" fill={jewelColors.light} />
           {/* Central Bottom Foot Sigil */}
           <path d="M 80 208 L 86 200 L 74 200 Z" fill="url(#frameGold)" stroke="#78350f" strokeWidth="1" />
         </g>
