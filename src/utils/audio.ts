@@ -477,15 +477,21 @@ export function stopAmbientSound(): void {
 }
 
 // ----------------------------------------------------
+// ----------------------------------------------------
 // Intro / Splash Screen Cinematic Music
 // ----------------------------------------------------
 let introAudioInstance: HTMLAudioElement | null = null;
 let introFadeTimer: number | null = null;
+let introAutoFadeTimeout: number | null = null;
 
 export function playIntroMusic(volumePercent: number = 75): Promise<void> {
   if (introFadeTimer !== null) {
     clearInterval(introFadeTimer);
     introFadeTimer = null;
+  }
+  if (introAutoFadeTimeout !== null) {
+    clearTimeout(introAutoFadeTimeout);
+    introAutoFadeTimeout = null;
   }
   if (!introAudioInstance) {
     introAudioInstance = new Audio('/sounds/chronos-intro.mp3');
@@ -493,10 +499,23 @@ export function playIntroMusic(volumePercent: number = 75): Promise<void> {
   }
   introAudioInstance.volume = Math.max(0, Math.min(1, volumePercent / 100));
   introAudioInstance.currentTime = 0;
-  return introAudioInstance.play();
+
+  const playPromise = introAudioInstance.play();
+  playPromise.then(() => {
+    // 4 saniye sonra kısılarak tamamen kapanmaya başlasın
+    introAutoFadeTimeout = window.setTimeout(() => {
+      stopIntroMusic(2000);
+    }, 4000);
+  }).catch(() => {});
+
+  return playPromise;
 }
 
 export function stopIntroMusic(fadeDurationMs: number = 600): void {
+  if (introAutoFadeTimeout !== null) {
+    clearTimeout(introAutoFadeTimeout);
+    introAutoFadeTimeout = null;
+  }
   if (!introAudioInstance) return;
   const audio = introAudioInstance;
   if (audio.paused) return;
@@ -506,7 +525,7 @@ export function stopIntroMusic(fadeDurationMs: number = 600): void {
   }
 
   const startVol = audio.volume;
-  const steps = 12;
+  const steps = 16;
   const stepTime = Math.max(20, fadeDurationMs / steps);
   let curStep = 0;
 

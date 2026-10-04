@@ -58,10 +58,10 @@ export const ClockworkGears: React.FC<ClockworkGearsProps> = ({
   };
 
   return (
-    <div className={`relative pointer-events-none ${className}`}>
+    <div className={`pointer-events-none absolute inset-0 w-full h-full flex items-center justify-center ${className}`}>
       <svg
         viewBox="0 0 500 500"
-        className="w-full h-full overflow-visible"
+        className="w-full h-full aspect-square"
         aria-hidden="true"
       >
         <defs>

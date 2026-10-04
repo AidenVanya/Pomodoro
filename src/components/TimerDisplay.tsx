@@ -24,33 +24,16 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   onOpenTasks,
 }) => {
 
-  // SVG Geometry constants
-  const size = 320;
-  const strokeWidth = 8;
-  const center = size / 2;
-  const radius = center - strokeWidth - 14;
-  const circumference = 2 * Math.PI * radius;
-
-  // Fraction of remaining time (1 -> full ring, 0 -> empty ring)
+  // Fraction of remaining time (1 -> full, 0 -> empty)
   const remainingRatio =
     totalDurationSeconds > 0
       ? Math.max(0, Math.min(1, remainingSeconds / totalDurationSeconds))
       : 0;
 
-  // Stroke offset so the ring shrinks as time elapses
-  const strokeDashoffset = circumference * (1 - remainingRatio);
-
-  // Endpoint glowing bead coordinates inside the -rotate-90 coordinate space
-  const progressAngle = (1 - remainingRatio) * 2 * Math.PI;
-  const dotX = center + radius * Math.cos(progressAngle);
-  const dotY = center + radius * Math.sin(progressAngle);
-
   // Chronos / Hades II Mode Color Palette
   const modeStyles = {
     FOCUS: {
-      gradientId: 'gradient-chronos-gold',
       auraBg: 'bg-gradient-to-tr from-amber-600/35 via-emerald-600/20 to-yellow-500/25',
-      track: 'stroke-amber-950/20 dark:stroke-amber-400/10',
       glow: 'shadow-amber-500/20 dark:shadow-amber-500/25',
       badgeBorder: 'border-amber-500/40 dark:border-amber-400/30',
       badgeBg: 'bg-amber-500/15 text-amber-600 dark:text-amber-300',
@@ -59,9 +42,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
       pausedLabel: 'Zaman Duraklatıldı',
     },
     SHORT_BREAK: {
-      gradientId: 'gradient-chronos-emerald',
       auraBg: 'bg-gradient-to-tr from-emerald-600/35 via-teal-600/20 to-green-500/25',
-      track: 'stroke-emerald-950/20 dark:stroke-emerald-400/10',
       glow: 'shadow-emerald-500/20 dark:shadow-emerald-500/25',
       badgeBorder: 'border-emerald-500/40 dark:border-emerald-400/30',
       badgeBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300',
@@ -70,9 +51,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
       pausedLabel: 'Zaman Duraklatıldı',
     },
     LONG_BREAK: {
-      gradientId: 'gradient-chronos-sky',
       auraBg: 'bg-gradient-to-tr from-sky-600/35 via-indigo-600/20 to-blue-500/25',
-      track: 'stroke-sky-950/20 dark:stroke-sky-400/10',
       glow: 'shadow-sky-500/20 dark:shadow-sky-500/25',
       badgeBorder: 'border-sky-500/40 dark:border-sky-400/30',
       badgeBg: 'bg-sky-500/15 text-sky-600 dark:text-sky-300',
@@ -100,95 +79,18 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         aria-hidden="true"
       />
 
-      {/* Outer subtle glow wrapper with dynamic constraints & clean overflow containment */}
+      {/* Main Centered Dial Container */}
       <div
         className={`relative flex items-center justify-center rounded-full overflow-hidden p-2 sm:p-4 transition-all duration-500 shadow-2xl w-[min(82vw,36dvh)] h-[min(82vw,36dvh)] sm:w-[350px] sm:h-[350px] md:w-[380px] md:h-[380px] max-w-[400px] max-h-[400px] min-w-[240px] min-h-[240px] aspect-square bg-[#070b10]/80 backdrop-blur-2xl border-2 border-amber-500/30 ${modeStyles.glow}`}
       >
         {/* ======================================================== */}
-        {/* ROTATING CLOCKWORK GEARS: The Grand Wheel of Chronos     */}
+        {/* ROTATING CLOCKWORK GEARS: Centered Dead-Center on Dial   */}
         {/* ======================================================== */}
         <ClockworkGears
           status={status}
           mode={mode}
           remainingRatio={remainingRatio}
-          className="absolute inset-0 w-full h-full"
         />
-
-        {/* ======================================================== */}
-        {/* CIRCULAR TIMER PROGRESS RING SVG                         */}
-        {/* ======================================================== */}
-        <svg
-          viewBox={`0 0 ${size} ${size}`}
-          className="w-full h-full transform -rotate-90 relative z-10"
-          aria-hidden="true"
-        >
-          <defs>
-            {/* Titan Gold Metallic Gradient */}
-            <linearGradient id="gradient-chronos-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fef08a" />
-              <stop offset="35%" stopColor="#f59e0b" />
-              <stop offset="75%" stopColor="#d97706" />
-              <stop offset="100%" stopColor="#10b981" />
-            </linearGradient>
-
-            {/* Witchfire Emerald Gradient */}
-            <linearGradient id="gradient-chronos-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6ee7b7" />
-              <stop offset="50%" stopColor="#10b981" />
-              <stop offset="100%" stopColor="#047857" />
-            </linearGradient>
-
-            {/* Celestial Sky Gradient */}
-            <linearGradient id="gradient-chronos-sky" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#7dd3fc" />
-              <stop offset="50%" stopColor="#0ea5e9" />
-              <stop offset="100%" stopColor="#4338ca" />
-            </linearGradient>
-
-            <filter id="timerRingGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Background Track Circle with Titan Gold Inscription */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            fill="transparent"
-            strokeWidth={strokeWidth}
-            className={`${modeStyles.track} transition-colors duration-500`}
-          />
-
-          {/* Animated Progress Ring */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            fill="transparent"
-            strokeWidth={strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            stroke={`url(#${modeStyles.gradientId})`}
-            filter={status === 'RUNNING' ? 'url(#timerRingGlow)' : undefined}
-            className="timer-ring"
-          />
-
-          {/* Glowing Head Bead */}
-          {remainingRatio > 0.008 && remainingRatio < 0.995 && (
-            <circle
-              cx={dotX}
-              cy={dotY}
-              r={strokeWidth / 2 + 1}
-              className="fill-amber-100 drop-shadow-[0_0_8px_rgba(254,240,138,0.9)]"
-            />
-          )}
-        </svg>
 
         {/* ======================================================== */}
         {/* CENTRAL CONTENT: The Monolithic Relic of Chronos          */}
